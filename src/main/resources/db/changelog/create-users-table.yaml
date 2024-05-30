@@ -36,7 +36,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: role
-                  type: varchar(24)
+                  type: enum('ADMIN', 'CUSTOMER', 'MANAGER')
                   constraints:
                     nullable: false
               - column:
