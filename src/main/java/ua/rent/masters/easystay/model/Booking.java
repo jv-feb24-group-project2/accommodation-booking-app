@@ -8,11 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Setter
@@ -24,13 +23,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
     @Column(name = "check_in_date", nullable = false)
-    private LocalDateTime checkInDate;
+    private LocalDate checkInDate;
 
-    @CreationTimestamp
     @Column(name = "check_out_date", nullable = false)
-    private LocalDateTime checkOutDate;
+    private LocalDate checkOutDate;
 
     @Column(name = "accommodation_id", nullable = false)
     private Long accommodationId;

@@ -15,12 +15,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: check_in_date
-                  type: TIMESTAMP
+                  type: DATE
                   constraints:
                     nullable: false
               - column:
                   name: check_out_date
-                  type: TIMESTAMP
+                  type: DATE
                   constraints:
                     nullable: false
               - column:
