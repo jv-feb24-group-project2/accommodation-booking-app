@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-accommodations-table
-      author: hanna
+      author: Hanna_Ratushniak
       changes:
         - createTable:
             tableName: accommodations
@@ -23,8 +23,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: size
-                  type: varchar(255)
+                  name: rooms
+                  type: INT
                   constraints:
                     nullable: false
               - column:

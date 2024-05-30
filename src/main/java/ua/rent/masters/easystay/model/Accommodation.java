@@ -1,22 +1,21 @@
 package ua.rent.masters.easystay.model;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -26,8 +25,6 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction(value = "is_deleted=false")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "accommodations")
 public class Accommodation {
     @Id
@@ -39,12 +36,12 @@ public class Accommodation {
     @Column(nullable = false)
     private String location;
     @Column(nullable = false)
-    private String size;
-    @ElementCollection
-    @CollectionTable(name = "accommodation_amenities",
-            joinColumns = @JoinColumn(name = "accommodation_id"))
-    @Column(name = "amenity")
-    private List<String> amenities = new ArrayList<>();
+    private Integer rooms;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "accommodations_amenities",
+            joinColumns = @JoinColumn(name = "accommodation_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id"))
+    private Set<Amenity> amenities = new HashSet<>();
     @Column(nullable = false)
     private BigDecimal dailyRate;
     @Column(nullable = false)
