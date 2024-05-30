@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-bookings-table
-      author: Serj
+      author: Serj_Gainovskyi
       changes:
         - createTable:
             tableName: bookings
