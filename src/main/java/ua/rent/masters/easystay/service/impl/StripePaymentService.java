@@ -17,5 +17,4 @@ public class StripePaymentService {
     public void init() {
         Stripe.apiKey = apiKey;
     }
-
 }
