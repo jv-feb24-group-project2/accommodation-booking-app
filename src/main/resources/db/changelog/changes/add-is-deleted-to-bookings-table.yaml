@@ -8,5 +8,5 @@ databaseChangeLog:
             columns:
               - column:
                   name: is_deleted
-                  type: BOOLEAN
+                  type: bit
                   defaultValueBoolean: false

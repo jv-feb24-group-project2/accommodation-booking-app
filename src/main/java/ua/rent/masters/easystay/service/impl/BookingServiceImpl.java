@@ -63,7 +63,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void deleteBookingByBookingId(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
-        bookingRepository.deleteById(bookingId);
+        bookingRepository.deleteById(booking.getId());
     }
 
     private void validateAccommodationId(Long accommodationId) {
@@ -77,4 +77,3 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking does not exist"));
     }
 }
-

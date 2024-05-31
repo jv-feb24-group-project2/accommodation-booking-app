@@ -42,6 +42,6 @@ public class Booking {
     @Column(name = "status", nullable = false)
     private BookingStatus status;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }
