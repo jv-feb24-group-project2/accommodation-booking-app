@@ -15,7 +15,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @Table(name = "payments")
 public class Payment {
     @Id
