@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-amenities
+      author: Hanna_Ratushniak
+      changes:
+        - insert:
+            tableName: amenities
+            columns:
+              - column: {name: name, value: "WIFI"}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: {name: name, value: "AIR_CONDITIONING"}
+        - insert:
+            tableName: amenities
+            columns:
+              - column: { name: name, value: "SWIMMING_POOL" }
