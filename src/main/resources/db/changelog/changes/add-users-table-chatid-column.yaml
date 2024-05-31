@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-users-table-chatid-column
+      author: Pavlo_Serikov
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: chatId
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
