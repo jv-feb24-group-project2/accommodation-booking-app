@@ -16,7 +16,7 @@ import ua.rent.masters.easystay.service.PaymentService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/payments")
+@RequestMapping("/payments")
 public class PaymentController {
     private final PaymentService paymentService;
 
