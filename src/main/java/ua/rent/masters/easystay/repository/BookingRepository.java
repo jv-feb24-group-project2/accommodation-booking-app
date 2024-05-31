@@ -6,4 +6,5 @@ import ua.rent.masters.easystay.model.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Long> {
+
 }

@@ -9,5 +9,3 @@ databaseChangeLog:
       file: db/changelog/changes/create-accommodations-amenities-table.yaml
   - include:
       file: db/changelog/changes/insert-amenities.yaml
-  - include:
-      file: db/changelog/changes/create-bookings-table.yaml

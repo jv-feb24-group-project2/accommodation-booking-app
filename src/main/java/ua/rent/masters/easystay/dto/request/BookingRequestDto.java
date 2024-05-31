@@ -1,10 +1,8 @@
-package ua.rent.masters.easystay.dto;
+package ua.rent.masters.easystay.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import ua.rent.masters.easystay.model.BookingStatus;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 @Data
 public class BookingRequestDto {

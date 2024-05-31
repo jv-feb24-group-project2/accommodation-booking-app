@@ -1,22 +1,24 @@
 package ua.rent.masters.easystay.service.impl;
 
-import org.springframework.data.domain.Pageable;
-import ua.rent.masters.easystay.dto.BookingRequestDto;
-import ua.rent.masters.easystay.dto.BookingResponseDto;
-import ua.rent.masters.easystay.model.BookingStatus;
-
 import java.util.List;
+import ua.rent.masters.easystay.dto.request.BookingRequestDto;
+import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
+import ua.rent.masters.easystay.dto.response.BookingResponseDto;
+import ua.rent.masters.easystay.dto.response.BookingResponseUpdatedDto;
+import ua.rent.masters.easystay.model.BookingStatus;
 
 public interface BookingService {
 
     BookingResponseDto createNewBooking(BookingRequestDto requestDto);
 
-    // for admin
     BookingResponseDto getBookingByUserIdByStatus(Long userId, BookingStatus bookingStatus);
 
-    List<BookingResponseDto> getUserBooking(Long userId, Pageable pageable);
+    List<BookingResponseDto> getAllUserBooking();
 
-    BookingResponseDto getBookingByBookingId(Long userId,Long bookingId,Pageable pageable);
+    BookingResponseDto getSpecificBookingByBookingId(Long bookingId);
 
-    BookingResponseDto updateBooking();
+    BookingResponseUpdatedDto updateBooking(Long bookingId,
+                                            BookingRequestUpdateDto requestUpdateDto);
+
+    void deleteBookingByBookingId(Long bookingId);
 }

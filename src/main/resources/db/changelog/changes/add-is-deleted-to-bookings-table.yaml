@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-is-deleted-column
+      author: Serhii_Gainovskyi
+      changes:
+        - addColumn:
+            tableName: bookings
+            columns:
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
