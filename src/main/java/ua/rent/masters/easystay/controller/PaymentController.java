@@ -35,9 +35,9 @@ public class PaymentController {
     }
 
     @ResponseStatus(HttpStatus.SEE_OTHER) // In reality must have @ResponseStatus(HttpStatus.SEE_OTHER)
-    @PostMapping("/create-session")
-    public void createPaymentSession(@RequestParam Long bookingId,
-                                                   HttpServletResponse response) {
+    @GetMapping("/create-session/{bookingId}")
+    public void createPaymentSession(@PathVariable Long bookingId,
+                                                   HttpServletResponse response) throws Exception {
         PaymentResponseDto responseDto = paymentService.createPaymentSession(bookingId);
         //information must be return in headers somehow
         response.setHeader(HttpHeaders.LOCATION, responseDto.getSessionUrl());

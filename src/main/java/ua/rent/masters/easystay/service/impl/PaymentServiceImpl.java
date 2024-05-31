@@ -1,11 +1,14 @@
 package ua.rent.masters.easystay.service.impl;
 
+import com.stripe.exception.StripeException;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 import ua.rent.masters.easystay.dto.PaymentDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.repository.PaymentRepository;
 import ua.rent.masters.easystay.service.PaymentService;
 
@@ -18,8 +21,16 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripePaymentService stripePaymentService;
 
     @Override
-    public PaymentResponseDto createPaymentSession(Long bookingId) {
-        return null;
+    public PaymentResponseDto createPaymentSession(Long bookingId) throws StripeException {
+        BigDecimal amountToPay = new BigDecimal(5999);
+        String cancelUrl = buildCancelUrl();
+        String successUrl = buildSuccessUrl();
+        String sessionId = stripePaymentService.createStripeSession(amountToPay, successUrl,
+                cancelUrl);
+        String sessionUrl = stripePaymentService.getSessionUrl(sessionId);
+        PaymentResponseDto responseDto = new PaymentResponseDto();
+        responseDto.setSessionUrl(sessionUrl);
+        return responseDto;
     }
 
     @Override
@@ -45,5 +56,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void openSession() {
+    }
+
+    private String buildSuccessUrl() {
+        return UriComponentsBuilder.fromHttpUrl("http://localhost:8080")
+                .path("/api/payments/success")
+                .toUriString();
+    }
+
+    private String buildCancelUrl() {
+        return UriComponentsBuilder.fromHttpUrl("http://localhost:8080")
+                .path("/api/payments/cancel")
+                .toUriString();
     }
 }

@@ -5,7 +5,7 @@ import ua.rent.masters.easystay.dto.PaymentDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
 
 public interface PaymentService {
-    PaymentResponseDto createPaymentSession(Long bookingId);
+    PaymentResponseDto createPaymentSession(Long bookingId) throws Exception;
 
     void handlePaymentSuccess(String sessionId);
 
