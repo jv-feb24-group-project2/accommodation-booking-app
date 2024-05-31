@@ -25,29 +25,29 @@ public class BookingController {
 
     @PostMapping
     public BookingResponseDto createNewBooking(@RequestBody BookingRequestDto requestDto) {
-        return bookingService.createNewBooking(requestDto);
+        return bookingService.create(requestDto);
     }
 
     @GetMapping("/my")
     public List<BookingResponseDto> findAllUserBooking() {
-        return bookingService.getAllUserBooking();
+        return bookingService.getAll();
     }
 
     @GetMapping("/{id}")
     public BookingResponseDto findSpecificBookingById(@PathVariable("id") Long bookingId) {
-        return bookingService.getSpecificBookingByBookingId(bookingId);
+        return bookingService.getById(bookingId);
     }
 
     @PatchMapping("/{id}")
     public BookingResponseUpdatedDto updateBookingByBookingId(@PathVariable("id") Long bookingId,
                                                               @RequestBody BookingRequestUpdateDto
                                                                       requestUpdateDto) {
-        return bookingService.updateBooking(bookingId,requestUpdateDto);
+        return bookingService.updateById(bookingId,requestUpdateDto);
     }
 
     @DeleteMapping("/{id}")
     public String deleteBookingByBookingId(@PathVariable("id") Long bookingId) {
-        bookingService.deleteBookingByBookingId(bookingId);
+        bookingService.deleteById(bookingId);
         return "You booking was successful deleted";
     }
 }

@@ -18,6 +18,6 @@ public interface BookingMapper {
     @Mapping(target = "checkInDate",source = "booking.checkInDate")
     @Mapping(target = "checkOutDate",source = "booking.checkOutDate")
     @Mapping(target = "accommodationId",source = "booking.accommodationId")
-    @Mapping(target = "status",source = "booking.status")
+    @Mapping(target = "status",source = "status")
     BookingResponseUpdatedDto toUpdatedDto(Booking booking);
 }

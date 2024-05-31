@@ -9,16 +9,16 @@ import ua.rent.masters.easystay.model.BookingStatus;
 
 public interface BookingService {
 
-    BookingResponseDto createNewBooking(BookingRequestDto requestDto);
+    BookingResponseDto create(BookingRequestDto requestDto);
 
     BookingResponseDto getBookingByUserIdByStatus(Long userId, BookingStatus bookingStatus);
 
-    List<BookingResponseDto> getAllUserBooking();
+    List<BookingResponseDto> getAll();
 
-    BookingResponseDto getSpecificBookingByBookingId(Long bookingId);
+    BookingResponseDto getById(Long bookingId);
 
-    BookingResponseUpdatedDto updateBooking(Long bookingId,
-                                            BookingRequestUpdateDto requestUpdateDto);
+    BookingResponseUpdatedDto updateById(Long bookingId,
+                                         BookingRequestUpdateDto requestUpdateDto);
 
-    void deleteBookingByBookingId(Long bookingId);
+    void deleteById(Long bookingId);
 }

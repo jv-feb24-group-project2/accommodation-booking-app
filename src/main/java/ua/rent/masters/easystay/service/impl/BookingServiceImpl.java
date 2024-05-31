@@ -20,8 +20,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
 
     @Override
-    public BookingResponseDto createNewBooking(BookingRequestDto requestDto) {
-        validateAccommodationId(requestDto.getAccommodationId());
+    public BookingResponseDto create(BookingRequestDto requestDto) {
+        validateAccommodationId(requestDto.accommodationId());
         Booking booking = bookingMapper.toEntity(requestDto);
         booking.setStatus(BookingStatus.PENDING);
 
@@ -35,25 +35,25 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAllUserBooking() {
+    public List<BookingResponseDto> getAll() {
         return bookingRepository.findAll().stream()
                 .map(bookingMapper::toDto)
                 .toList();
     }
 
     @Override
-    public BookingResponseDto getSpecificBookingByBookingId(Long bookingId) {
+    public BookingResponseDto getById(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         return bookingMapper.toDto(booking);
     }
 
     @Override
-    public BookingResponseUpdatedDto updateBooking(Long bookingId,
-                                                   BookingRequestUpdateDto requestUpdateDto) {
+    public BookingResponseUpdatedDto updateById(Long bookingId,
+                                                BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
-        booking.setCheckInDate(requestUpdateDto.getCheckInDate());
-        booking.setCheckOutDate(requestUpdateDto.getCheckOutDate());
-        booking.setAccommodationId(requestUpdateDto.getAccommodationId());
+        booking.setCheckInDate(requestUpdateDto.checkInDate());
+        booking.setCheckOutDate(requestUpdateDto.checkOutDate());
+        booking.setAccommodationId(requestUpdateDto.accommodationId());
         booking.setStatus(BookingStatus.PENDING);
         bookingRepository.save(booking);
 
@@ -61,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void deleteBookingByBookingId(Long bookingId) {
+    public void deleteById(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         bookingRepository.deleteById(booking.getId());
     }

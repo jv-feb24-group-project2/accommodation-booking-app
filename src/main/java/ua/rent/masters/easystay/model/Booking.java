@@ -21,7 +21,6 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction(value = "is_deleted=false")
 @Table(name = "bookings")
 public class Booking {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
