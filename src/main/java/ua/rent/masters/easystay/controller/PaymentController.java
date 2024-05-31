@@ -1,7 +1,9 @@
 package ua.rent.masters.easystay.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,12 +34,13 @@ public class PaymentController {
         return paymentService.getAllPayments();
     }
 
-    @ResponseStatus(HttpStatus.OK) // In reality must have @ResponseStatus(HttpStatus.SEE_OTHER)
+    @ResponseStatus(HttpStatus.SEE_OTHER) // In reality must have @ResponseStatus(HttpStatus.SEE_OTHER)
     @PostMapping("/create-session")
-    public PaymentResponseDto createPaymentSession(@RequestParam Long bookingId) {
+    public void createPaymentSession(@RequestParam Long bookingId,
+                                                   HttpServletResponse response) {
         PaymentResponseDto responseDto = paymentService.createPaymentSession(bookingId);
         //information must be return in headers somehow
-        return responseDto;
+        response.setHeader(HttpHeaders.LOCATION, responseDto.getSessionUrl());
     }
 
     @ResponseStatus(HttpStatus.OK)
