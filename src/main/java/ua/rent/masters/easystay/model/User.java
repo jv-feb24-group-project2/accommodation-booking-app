@@ -35,7 +35,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
     @Column(nullable = false)
-    private long chatId;
+    private Long chatId;
 
     public enum Role {
         ADMIN,
