@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,12 +33,11 @@ public class PaymentController {
         return paymentService.getAllPayments();
     }
 
-    @ResponseStatus(HttpStatus.SEE_OTHER) // In reality must have @ResponseStatus(HttpStatus.SEE_OTHER)
+    @ResponseStatus(HttpStatus.SEE_OTHER)
     @GetMapping("/create-session/{bookingId}")
     public void createPaymentSession(@PathVariable Long bookingId,
                                                    HttpServletResponse response) throws Exception {
         PaymentResponseDto responseDto = paymentService.createPaymentSession(bookingId);
-        //information must be return in headers somehow
         response.setHeader(HttpHeaders.LOCATION, responseDto.getSessionUrl());
     }
 

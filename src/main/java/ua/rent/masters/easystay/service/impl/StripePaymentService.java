@@ -22,26 +22,28 @@ public class StripePaymentService {
         Stripe.apiKey = apiKey;
     }
 
-    public String createStripeSession(BigDecimal amount, String successUrl, String cancelUrl) throws StripeException {
+    public String createStripeSession(BigDecimal amount, String successUrl, String cancelUrl)
+        throws StripeException {
         SessionCreateParams params =
-                SessionCreateParams.builder()
-                        .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl(successUrl)
-                        .setCancelUrl(cancelUrl)
-                        .addLineItem(
-                                SessionCreateParams.LineItem.builder()
-                                        .setQuantity(1L)
-                                        .setPriceData(
-                                                SessionCreateParams.LineItem.PriceData.builder()
-                                                        .setCurrency("usd")
-                                                        .setUnitAmount(amount.multiply(BigDecimal.valueOf(100)).longValue())
-                                                        .setProductData(
-                                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                        .setName("Booking Payment")
-                                                                        .build())
-                                                        .build())
-                                        .build())
-                        .build();
+            SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(successUrl)
+                .setCancelUrl(cancelUrl)
+                .addLineItem(
+                    SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)
+                        .setPriceData(
+                            SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("usd")
+                                .setUnitAmount(amount.longValue())
+                                .setProductData(
+                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                            .setName("Booking For "
+                                                    + "Apartment X")
+                                            .build())
+                                .build())
+                        .build())
+                .build();
 
         Session session = Session.create(params);
         return session.getId();

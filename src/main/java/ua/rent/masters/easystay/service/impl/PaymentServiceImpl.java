@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import ua.rent.masters.easystay.dto.PaymentDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
-import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.repository.PaymentRepository;
 import ua.rent.masters.easystay.service.PaymentService;
 
@@ -22,7 +21,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto createPaymentSession(Long bookingId) throws StripeException {
-        BigDecimal amountToPay = new BigDecimal(5999);
+        BigDecimal amountToPay = new BigDecimal(59);
         String cancelUrl = buildCancelUrl();
         String successUrl = buildSuccessUrl();
         String sessionId = stripePaymentService.createStripeSession(amountToPay, successUrl,
