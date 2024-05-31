@@ -1,5 +1,15 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/changes/create-payments-table.yaml
+      file: db/changelog/changes/create-users-table.yaml
   - include:
       file: db/changelog/changes/create-bookings-table.yaml
+  - include:
+      file: db/changelog/changes/create-accommodation-table.yaml
+  - include:
+      file: db/changelog/changes/create-amenity-table.yaml
+  - include:
+      file: db/changelog/changes/create-accommodations-amenities-table.yaml
+  - include:
+      file: db/changelog/changes/insert-amenities.yaml
+  - include:
+      file: db/changelog/changes/create-payments-table.yaml
