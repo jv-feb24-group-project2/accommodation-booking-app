@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationDto;
 import ua.rent.masters.easystay.dto.accommodation.CreateAccommodationRequestDto;
@@ -41,8 +40,8 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
-    public List<AccommodationDto> findAll(Pageable pageable) {
-        return accommodationRepository.findAll(pageable).stream()
+    public List<AccommodationDto> findAll() {
+        return accommodationRepository.findAll().stream()
                 .map(accommodationMapper::toDto)
                 .toList();
     }

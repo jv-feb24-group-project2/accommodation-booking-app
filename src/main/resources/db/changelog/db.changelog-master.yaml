@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/changes/insert-amenities.yaml
   - include:
       file: db/changelog/changes/create-payments-table.yaml
+  - include:
+      file: db/changelog/changes/add-users-table-chat_id-column.yaml

@@ -3,7 +3,6 @@ package ua.rent.masters.easystay.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,7 @@ import ua.rent.masters.easystay.service.AccommodationService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/accommodation")
+@RequestMapping(value = "/accommodation")
 public class AccommodationController {
     private final AccommodationService accommodationService;
 
@@ -28,8 +27,8 @@ public class AccommodationController {
     //@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     //@Operation(summary = "Get all accommodations",
     // description = "Get a list of all available accommodations")
-    public List<AccommodationDto> getAll(Pageable pageable) {
-        return accommodationService.findAll(pageable);
+    public List<AccommodationDto> getAll() {
+        return accommodationService.findAll();
     }
 
     @GetMapping("/{id}")

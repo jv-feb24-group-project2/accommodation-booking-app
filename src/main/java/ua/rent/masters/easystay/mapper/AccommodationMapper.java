@@ -18,7 +18,7 @@ public interface AccommodationMapper {
     AccommodationDto toDto(Accommodation accommodation);
 
     @AfterMapping
-    default void setCategoryIds(@MappingTarget AccommodationDto dto, Accommodation accommodation) {
+    default void setAmetityIds(@MappingTarget AccommodationDto dto, Accommodation accommodation) {
         Set<Long> amenityIds = accommodation.getAmenities().stream()
                 .map(Amenity::getId)
                 .collect(Collectors.toSet());
