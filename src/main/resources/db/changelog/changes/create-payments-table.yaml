@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-payment-table
+      author: Taras_Fedak
+      changes:
+        - createTable:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: ENUM('PENDING', 'PAID', 'EXPIRED')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: booking_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: session_url
+                  type: VARCHAR(255)
+              - column:
+                  name: session_id
+                  type: VARCHAR(255)
+              - column:
+                  name: amount_to_pay
+                  type: DECIMAL(19, 2)
+                  constraints:
+                    nullable: false
