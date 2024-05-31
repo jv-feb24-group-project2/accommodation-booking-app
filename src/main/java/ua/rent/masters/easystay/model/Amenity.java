@@ -2,8 +2,6 @@ package ua.rent.masters.easystay.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,13 +21,7 @@ public class Amenity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false,unique = true)
-    private AmenityName amenity;
-
-    public enum AmenityName {
-        WIFI,
-        AIR_CONDITIONING,
-        SWIMMING_POOL
-    }
+    private String name;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

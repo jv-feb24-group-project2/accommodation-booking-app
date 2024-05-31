@@ -13,8 +13,14 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: amenity
-                  type: enum('WIFI', 'AIR_CONDITIONING', 'SWIMMING_POOL')
+                  name: name
+                  type: varchar(250)
                   constraints:
                     nullable: false
                     unique: true
+              - column:
+                  name: is_deleted
+                  type: BIT
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

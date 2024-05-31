@@ -6,12 +6,12 @@ databaseChangeLog:
         - insert:
             tableName: amenities
             columns:
-              - column: {name: amenity, value: "WIFI"}
+              - column: {name: name, value: "WIFI"}
         - insert:
             tableName: amenities
             columns:
-              - column: {name: amenity, value: "AIR_CONDITIONING"}
+              - column: {name: name, value: "AIR_CONDITIONING"}
         - insert:
             tableName: amenities
             columns:
-              - column: { name: amenity, value: "SWIMMING_POOL" }
+              - column: { name: name, value: "SWIMMING_POOL" }
