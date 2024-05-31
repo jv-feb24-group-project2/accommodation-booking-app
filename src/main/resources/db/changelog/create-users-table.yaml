@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-users-table
-      author: rel1c-hub
+      author: Pavlo_Serikov
       changes:
         - createTable:
             tableName: users
@@ -12,7 +12,6 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: email
                   type: varchar(255)

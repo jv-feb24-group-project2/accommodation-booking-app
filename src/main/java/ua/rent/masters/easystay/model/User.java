@@ -20,8 +20,6 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("is_deleted=false")
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @Table(name = "users")
 public class User {
     @Id
