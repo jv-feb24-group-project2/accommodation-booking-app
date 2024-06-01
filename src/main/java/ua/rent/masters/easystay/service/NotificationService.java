@@ -1,17 +1,21 @@
 package ua.rent.masters.easystay.service;
 
-import ua.rent.masters.easystay.dto.NotifyResponse;
+import ua.rent.masters.easystay.dto.NotificationResponse;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Booking;
+import ua.rent.masters.easystay.model.NotificationStatus;
 import ua.rent.masters.easystay.model.Payment;
 import ua.rent.masters.easystay.model.User;
 
 public interface NotificationService {
-    void notifyAboutAccommodation(Accommodation accommodation, User user);
+    void notifyAboutAccommodationStatus(
+            Accommodation accommodation, User user, NotificationStatus status);
 
-    void notifyAboutBooking(Booking booking, User user);
+    void notifyAboutBookingStatus(Booking booking, User user, NotificationStatus status);
 
-    void notifyAboutPayment(Payment payment, User user);
+    void notifyAboutPaymentStatus(Payment payment, User user, NotificationStatus status);
 
-    NotifyResponse registerUserForNotifications(User user);
+    NotificationResponse subscribe(User user);
+
+    NotificationResponse unsubscribe(User user);
 }
