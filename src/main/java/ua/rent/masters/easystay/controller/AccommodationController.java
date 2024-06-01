@@ -52,7 +52,7 @@ public class AccommodationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AccommodationResponseDto update(@PathVariable Long id,
-                              @RequestBody AccommodationRequestDto requestDto) {
+                                           @Valid @RequestBody AccommodationRequestDto requestDto) {
         return accommodationService.update(id,requestDto);
     }
 
