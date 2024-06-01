@@ -1,17 +1,18 @@
 package ua.rent.masters.easystay.service;
 
 import java.util.List;
-import ua.rent.masters.easystay.dto.accommodation.AccommodationDto;
-import ua.rent.masters.easystay.dto.accommodation.CreateAccommodationRequestDto;
+import org.springframework.data.domain.Pageable;
+import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
+import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 
 public interface AccommodationService {
-    AccommodationDto save(CreateAccommodationRequestDto requestDto);
+    AccommodationResponseDto save(AccommodationRequestDto requestDto);
 
-    AccommodationDto findById(Long id);
+    AccommodationResponseDto findById(Long id);
 
-    List<AccommodationDto> findAll();
+    List<AccommodationResponseDto> findAll(Pageable pageable);
 
-    AccommodationDto update(Long id, CreateAccommodationRequestDto requestDto);
+    AccommodationResponseDto update(Long id, AccommodationRequestDto requestDto);
 
     void deleteById(Long id);
 }

@@ -3,6 +3,8 @@ package ua.rent.masters.easystay.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.rent.masters.easystay.dto.accommodation.AccommodationDto;
-import ua.rent.masters.easystay.dto.accommodation.CreateAccommodationRequestDto;
+import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
+import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.service.AccommodationService;
 
 @RequiredArgsConstructor
@@ -23,47 +26,40 @@ import ua.rent.masters.easystay.service.AccommodationService;
 public class AccommodationController {
     private final AccommodationService accommodationService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    //@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    //@Operation(summary = "Get all accommodations",
-    // description = "Get a list of all available accommodations")
-    public List<AccommodationDto> getAll() {
-        return accommodationService.findAll();
+    public List<AccommodationResponseDto> getAll(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return accommodationService.findAll(pageable);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    //@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    //@Operation(summary = "Get an accommodation for id",
-    // description = "Get an accommodation for id")
-    public AccommodationDto getAccomodationById(@PathVariable Long id) {
+    public AccommodationResponseDto getById(@PathVariable Long id) {
         return accommodationService.findById(id);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    //@Operation(summary = "Create a new accommodation",
-    // description = "Create a new accommodation")
-    public AccommodationDto createAccomodation(
-            @Valid @RequestBody CreateAccommodationRequestDto requestDto) {
+    public AccommodationResponseDto create(
+            @Valid @RequestBody AccommodationRequestDto requestDto) {
         return accommodationService.save(requestDto);
     }
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
-    //@Operation(summary = "Update the accommodation", description = "Update the accommodation")
-    public AccommodationDto updateAccomodation(@PathVariable Long id,
-                              @RequestBody CreateAccommodationRequestDto requestDto) {
+    public AccommodationResponseDto update(@PathVariable Long id,
+                              @RequestBody AccommodationRequestDto requestDto) {
         return accommodationService.update(id,requestDto);
     }
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    //@Operation(summary = "Delete the accommodation", description = "Delete the accommodation")
-    public void deleteAccomodation(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         accommodationService.deleteById(id);
-
     }
-
 }
