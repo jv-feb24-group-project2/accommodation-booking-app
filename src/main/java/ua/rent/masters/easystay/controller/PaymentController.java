@@ -43,15 +43,15 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/success")
-    public String handlePaymentSuccess(@RequestParam String sessionId) {
+    public String handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentSuccess(sessionId);
-        return "Successful!";
+        return sessionId;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
-    public String handlePaymentCancel(String sessionId) {
+    public String handlePaymentCancel(@RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentCanceling(sessionId);
-        return "Canceled!";
+        return sessionId;
     }
 }

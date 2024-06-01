@@ -1,6 +1,7 @@
 package ua.rent.masters.easystay.service.impl;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,10 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal amountToPay = new BigDecimal(59);
         String cancelUrl = buildCancelUrl();
         String successUrl = buildSuccessUrl();
-        String sessionId = stripePaymentService.createStripeSession(amountToPay, successUrl,
+        Session session = stripePaymentService.createStripeSession(amountToPay, successUrl,
                 cancelUrl);
-        String sessionUrl = stripePaymentService.getSessionUrl(sessionId);
+        session.setSuccessUrl(session.getSuccessUrl() + "/" + session.getId());
+        String sessionUrl = stripePaymentService.getSessionUrl(session.getId());
         PaymentResponseDto responseDto = new PaymentResponseDto();
         responseDto.setSessionUrl(sessionUrl);
         return responseDto;

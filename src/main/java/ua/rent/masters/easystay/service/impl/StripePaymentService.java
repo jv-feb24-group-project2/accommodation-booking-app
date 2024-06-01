@@ -22,13 +22,12 @@ public class StripePaymentService {
         Stripe.apiKey = apiKey;
     }
 
-    public String createStripeSession(BigDecimal amount, String successUrl, String cancelUrl)
-        throws StripeException {
-        SessionCreateParams params =
-            SessionCreateParams.builder()
+    public Session createStripeSession(BigDecimal amount,
+                                       String successUrl, String cancelUrl) throws StripeException {
+        SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(successUrl)
-                .setCancelUrl(cancelUrl)
+                .setSuccessUrl(successUrl + "?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl(cancelUrl + "?session_id={CHECKOUT_SESSION_ID}")
                 .addLineItem(
                     SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
@@ -44,9 +43,7 @@ public class StripePaymentService {
                                 .build())
                         .build())
                 .build();
-
-        Session session = Session.create(params);
-        return session.getId();
+        return Session.create(params);
     }
 
     public String getSessionUrl(String sessionId) throws StripeException {
