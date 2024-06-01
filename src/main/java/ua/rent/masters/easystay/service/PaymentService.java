@@ -2,10 +2,9 @@ package ua.rent.masters.easystay.service;
 
 import java.util.List;
 import ua.rent.masters.easystay.dto.PaymentDto;
-import ua.rent.masters.easystay.dto.PaymentResponseDto;
 
 public interface PaymentService {
-    PaymentResponseDto createPaymentSession(Long bookingId) throws Exception;
+    String createPaymentSession(Long bookingId) throws Exception;
 
     void handlePaymentSuccess(String sessionId);
 

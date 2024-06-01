@@ -34,7 +34,7 @@ public class StripePaymentService {
                         .setPriceData(
                             SessionCreateParams.LineItem.PriceData.builder()
                                 .setCurrency("usd")
-                                .setUnitAmount(amount.longValue())
+                                .setUnitAmount(amount.longValue() * 100)
                                 .setProductData(
                                         SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                             .setName("Booking For "

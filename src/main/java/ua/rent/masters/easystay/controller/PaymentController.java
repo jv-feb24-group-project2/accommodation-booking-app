@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.rent.masters.easystay.dto.PaymentDto;
-import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.service.PaymentService;
 
 @RestController
@@ -35,10 +34,12 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @GetMapping("/create-session/{bookingId}")
-    public void createPaymentSession(@PathVariable Long bookingId,
-                                                   HttpServletResponse response) throws Exception {
-        PaymentResponseDto responseDto = paymentService.createPaymentSession(bookingId);
-        response.setHeader(HttpHeaders.LOCATION, responseDto.getSessionUrl());
+    public void createPaymentSession(
+            @PathVariable Long bookingId,
+            HttpServletResponse response
+    ) throws Exception {
+        String sessionUrl = paymentService.createPaymentSession(bookingId);
+        response.setHeader(HttpHeaders.LOCATION, sessionUrl);
     }
 
     @ResponseStatus(HttpStatus.OK)
