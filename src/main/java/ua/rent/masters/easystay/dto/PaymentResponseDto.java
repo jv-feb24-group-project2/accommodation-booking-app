@@ -1,8 +1,13 @@
 package ua.rent.masters.easystay.dto;
 
-import lombok.Data;
+import java.math.BigDecimal;
 
-@Data
-public class PaymentResponseDto {
-    private String sessionUrl;
+public record PaymentResponseDto(
+        Long id,
+        String status,
+        Long bookingId,
+        String sessionUrl,
+        String sessionId,
+        BigDecimal amountToPay
+) {
 }

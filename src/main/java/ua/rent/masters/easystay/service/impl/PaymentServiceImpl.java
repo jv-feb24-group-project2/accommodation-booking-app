@@ -9,12 +9,15 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import ua.rent.masters.easystay.dto.PaymentDto;
+import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.exception.EntityNotFoundException;
+import ua.rent.masters.easystay.mapper.PaymentMapper;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.Payment;
 import ua.rent.masters.easystay.model.PaymentStatus;
+import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.PaymentRepository;
@@ -28,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final AccommodationRepository accommodationRepository;
     private final StripePaymentService stripePaymentService;
+    private final PaymentMapper paymentMapper;
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
@@ -42,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setSessionId(session.getId());
         payment.setSessionUrl(sessionUrl);
         payment.setStatus(PaymentStatus.PENDING);
-        payment.setBookingId(bookingId);
+        payment.setBooking(booking);
         payment.setAmountToPay(amountToPay);
 
         paymentRepository.save(payment);
@@ -51,29 +55,40 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void handlePaymentSuccess(String sessionId) {
-        Payment payment = paymentRepository.findBySessionId(sessionId).get();
+        Payment payment = findPaymentEntityBySessionId(sessionId);
         payment.setStatus(PaymentStatus.PAID);
+        payment.getBooking().setStatus(BookingStatus.CONFIRMED);
         paymentRepository.save(payment);
-        Booking booking = bookingRepository.findById(payment.getBookingId()).get();
-        booking.setStatus(BookingStatus.CONFIRMED);
-        bookingRepository.save(booking);
     }
 
     @Override
     public void handlePaymentCanceling(String sessionId) {
-        Payment payment = paymentRepository.findBySessionId(sessionId).get();
+        Payment payment = findPaymentEntityBySessionId(sessionId);
         payment.setStatus(PaymentStatus.EXPIRED);
         paymentRepository.save(payment);
     }
 
     @Override
-    public List<PaymentDto> getAllPayments() {
-        return null;
+    public List<PaymentResponseDto> getAllPayments(User user) {
+        List<Payment> allByBookingUserId = paymentRepository.findAllByBookingUserId(user.getId());
+        return allByBookingUserId.stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 
     @Override
-    public PaymentDto getPaymentById(Long id) {
-        return null;
+    public PaymentResponseDto getPaymentById(Long paymentId, User user) {
+        Long userId = user.getId();
+        Payment payment = paymentRepository.findByIdAndBookingUserId(paymentId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Cant find payment with id: "
+                        + paymentId + " and user id: " + userId));
+        return paymentMapper.toDto(payment);
+    }
+
+    Payment findPaymentEntityBySessionId(String sessionId) {
+        return paymentRepository.findWithBookingBySessionId(sessionId).orElseThrow(
+                () -> new EntityNotFoundException("Cant find payment with session id: "
+                        + sessionId));
     }
 
     private BigDecimal calculateAmount(Booking booking) {

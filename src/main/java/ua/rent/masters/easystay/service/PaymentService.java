@@ -1,7 +1,8 @@
 package ua.rent.masters.easystay.service;
 
 import java.util.List;
-import ua.rent.masters.easystay.dto.PaymentDto;
+import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.model.User;
 
 public interface PaymentService {
     String createPaymentSession(Long bookingId) throws Exception;
@@ -10,7 +11,7 @@ public interface PaymentService {
 
     void handlePaymentCanceling(String sessionId);
 
-    List<PaymentDto> getAllPayments();
+    List<PaymentResponseDto> getAllPayments(User user);
 
-    PaymentDto getPaymentById(Long id);
+    PaymentResponseDto getPaymentById(Long id, User user);
 }

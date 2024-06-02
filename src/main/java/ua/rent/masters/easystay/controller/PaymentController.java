@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.rent.masters.easystay.dto.PaymentDto;
+import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.PaymentService;
 
 @RestController
@@ -22,14 +23,14 @@ public class PaymentController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PaymentDto getPaymentById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id);
+    public PaymentResponseDto getPaymentById(@PathVariable Long id, User user) {
+        return paymentService.getPaymentById(id, user);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentDto> getAllPayments() {
-        return paymentService.getAllPayments();
+    public List<PaymentResponseDto> getAllPayments(User user) {
+        return paymentService.getAllPayments(user);
     }
 
     @ResponseStatus(HttpStatus.SEE_OTHER)
