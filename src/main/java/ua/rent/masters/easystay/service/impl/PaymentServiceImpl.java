@@ -35,8 +35,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
-        Booking booking = bookingRepository.findById(bookingId).get();
-
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
+                + bookingId));
+        if (booking.getStatus().equals(BookingStatus.CONFIRMED)) {
+            throw new IllegalStateException("Booking is already paid");
+        }
         BigDecimal amountToPay = calculateAmount(booking);
 
         Session session = openSession(amountToPay);
