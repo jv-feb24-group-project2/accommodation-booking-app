@@ -14,4 +14,6 @@ public interface PaymentService {
     List<PaymentResponseDto> getAllPayments(User user);
 
     PaymentResponseDto getPaymentById(Long id, User user);
+
+    PaymentResponseDto getPaymentBySessionId(String sessionId);
 }

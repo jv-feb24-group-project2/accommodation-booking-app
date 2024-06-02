@@ -85,6 +85,11 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toDto(payment);
     }
 
+    @Override
+    public PaymentResponseDto getPaymentBySessionId(String sessionId) {
+        return paymentMapper.toDto(findPaymentEntityBySessionId(sessionId));
+    }
+
     Payment findPaymentEntityBySessionId(String sessionId) {
         return paymentRepository.findWithBookingBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Cant find payment with session id: "
@@ -94,7 +99,8 @@ public class PaymentServiceImpl implements PaymentService {
     private BigDecimal calculateAmount(Booking booking) {
         Accommodation accommodation = accommodationRepository.findById(
                 booking.getAccommodationId()
-        ).get();
+        ).orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
+                        + booking.getId()));
         BigDecimal dailyRate = accommodation.getDailyRate();
         long days = DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate());
         return dailyRate.multiply(BigDecimal.valueOf(days));

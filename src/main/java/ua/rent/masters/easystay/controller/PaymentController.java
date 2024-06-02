@@ -45,9 +45,9 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/success")
-    public String handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
+    public PaymentResponseDto handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentSuccess(sessionId);
-        return sessionId;
+        return paymentService.getPaymentBySessionId(sessionId);
     }
 
     @ResponseStatus(HttpStatus.OK)
