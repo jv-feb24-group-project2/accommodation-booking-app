@@ -7,6 +7,7 @@ import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
@@ -27,6 +28,14 @@ import ua.rent.masters.easystay.service.PaymentService;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
+    private static final String BOOKING = "Booking";
+    private static final String FROM = "from";
+    private static final String PATH_SUCCESS = "/api/payments/success";
+    private static final String PATH_CANCEL = "/api/payments/cancel";
+    private static final String SPACE = " ";
+    private static final String TO = "to";
+    @Value("${app.payment.base.url}")
+    private String baseUrl;
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;
     private final AccommodationRepository accommodationRepository;
@@ -37,21 +46,11 @@ public class PaymentServiceImpl implements PaymentService {
     public String createPaymentSession(Long bookingId) throws StripeException {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
-                + bookingId));
+                        + bookingId));
         if (booking.getStatus().equals(BookingStatus.CONFIRMED)) {
             throw new IllegalStateException("Booking is already paid");
         }
-        BigDecimal amountToPay = calculateAmount(booking);
-
-        Session session = openSession(amountToPay);
-        String sessionUrl = stripePaymentService.getSessionUrl(session.getId());
-
-        Payment payment = new Payment();
-        payment.setSessionId(session.getId());
-        payment.setSessionUrl(sessionUrl);
-        payment.setStatus(PaymentStatus.PENDING);
-        payment.setBooking(booking);
-        payment.setAmountToPay(amountToPay);
+        Payment payment = createPayment(booking);
 
         paymentRepository.save(payment);
         return payment.getSessionUrl();
@@ -59,15 +58,17 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void handlePaymentSuccess(String sessionId) {
-        Payment payment = findPaymentEntityBySessionId(sessionId);
+        Payment payment = findPaymentBySessionId(sessionId);
         payment.setStatus(PaymentStatus.PAID);
-        payment.getBooking().setStatus(BookingStatus.CONFIRMED);
+        Booking booking = payment.getBooking();
         paymentRepository.save(payment);
+        booking.setStatus(BookingStatus.CONFIRMED);
+        bookingRepository.save(booking);
     }
 
     @Override
     public void handlePaymentCanceling(String sessionId) {
-        Payment payment = findPaymentEntityBySessionId(sessionId);
+        Payment payment = findPaymentBySessionId(sessionId);
         payment.setStatus(PaymentStatus.EXPIRED);
         paymentRepository.save(payment);
     }
@@ -91,44 +92,66 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto getPaymentBySessionId(String sessionId) {
-        return paymentMapper.toDto(findPaymentEntityBySessionId(sessionId));
+        return paymentMapper.toDto(findPaymentBySessionId(sessionId));
     }
 
-    Payment findPaymentEntityBySessionId(String sessionId) {
+    Payment findPaymentBySessionId(String sessionId) {
         return paymentRepository.findWithBookingBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Cant find payment with session id: "
                         + sessionId));
     }
 
-    private BigDecimal calculateAmount(Booking booking) {
-        Accommodation accommodation = accommodationRepository.findById(
-                booking.getAccommodationId()
-        ).orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
-                        + booking.getId()));
+    private BigDecimal calculateAmount(Booking booking, Accommodation accommodation) {
         BigDecimal dailyRate = accommodation.getDailyRate();
         long days = DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate());
         return dailyRate.multiply(BigDecimal.valueOf(days));
     }
 
-    private Session openSession(BigDecimal amountToPay) throws StripeException {
+    private Accommodation getAccommodation(Booking booking) {
+        return accommodationRepository.findById(
+                booking.getAccommodationId()
+        ).orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
+                + booking.getId()));
+    }
+
+    private Session openSession(BigDecimal amountToPay, String paymentTitle)
+            throws StripeException {
         String cancelUrl = buildCancelUrl();
         String successUrl = buildSuccessUrl();
 
         return stripePaymentService.createStripeSession(
+                paymentTitle,
                 amountToPay,
                 successUrl,
                 cancelUrl);
     }
 
+    private Payment createPayment(Booking booking) throws StripeException {
+        Payment payment = new Payment();
+        Accommodation accommodation = getAccommodation(booking);
+        BigDecimal amountToPay = calculateAmount(booking, accommodation);
+        String bookingTitle = getBookingTitle(booking, accommodation);
+        Session session = openSession(amountToPay, bookingTitle);
+        String sessionUrl = stripePaymentService.getSessionUrl(session.getId());
+        payment.setSessionId(session.getId());
+        payment.setSessionUrl(sessionUrl);
+        payment.setStatus(PaymentStatus.PENDING);
+        payment.setBooking(booking);
+        payment.setAmountToPay(amountToPay);
+        return payment;
+    }
+
+    private static String getBookingTitle(Booking booking, Accommodation accommodation) {
+        return BOOKING + SPACE + accommodation.getLocation() + SPACE
+                + FROM + SPACE + booking.getCheckInDate().toString() + SPACE
+                + TO + SPACE + booking.getCheckOutDate().toString();
+    }
+
     private String buildSuccessUrl() {
-        return UriComponentsBuilder.fromHttpUrl("http://localhost:8080")
-                .path("/api/payments/success")
-                .toUriString();
+        return UriComponentsBuilder.fromHttpUrl(baseUrl).path(PATH_SUCCESS).toUriString();
     }
 
     private String buildCancelUrl() {
-        return UriComponentsBuilder.fromHttpUrl("http://localhost:8080")
-                .path("/api/payments/cancel")
-                .toUriString();
+        return UriComponentsBuilder.fromHttpUrl(baseUrl).path(PATH_CANCEL).toUriString();
     }
 }

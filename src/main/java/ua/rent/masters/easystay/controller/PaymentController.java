@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.PaymentService;
@@ -35,10 +36,8 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @GetMapping("/create-session/{bookingId}")
-    public void createPaymentSession(
-            @PathVariable Long bookingId,
-            HttpServletResponse response
-    ) throws Exception {
+    public void createPaymentSession(@PathVariable Long bookingId,
+                                     HttpServletResponse response) throws Exception {
         String sessionUrl = paymentService.createPaymentSession(bookingId);
         response.setHeader(HttpHeaders.LOCATION, sessionUrl);
     }
@@ -52,8 +51,9 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
-    public String handlePaymentCancel(@RequestParam("session_id") String sessionId) {
+    public PaymentCancelResponseDto handlePaymentCancel(
+            @RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentCanceling(sessionId);
-        return sessionId;
+        return new PaymentCancelResponseDto("I need BookingResponseDto to add more details");
     }
 }
