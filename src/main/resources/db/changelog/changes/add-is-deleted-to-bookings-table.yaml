@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: add-is-deleted-column
+      id: add-is_deleted-column
       author: Serhii_Gainovskyi
       changes:
         - addColumn:

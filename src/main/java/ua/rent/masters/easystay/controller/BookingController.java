@@ -1,5 +1,6 @@
 package ua.rent.masters.easystay.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class BookingController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookingResponseDto createNewBooking(
-            @RequestBody BookingRequestDto requestDto) {
+            @RequestBody @Valid BookingRequestDto requestDto) {
         return bookingService.create(requestDto);
     }
 
@@ -49,7 +50,7 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public BookingResponseDto updateBookingByBookingId(
             @PathVariable("id") Long bookingId,
-            @RequestBody BookingRequestUpdateDto
+            @RequestBody @Valid BookingRequestUpdateDto
                     requestUpdateDto) {
         return bookingService.updateById(bookingId, requestUpdateDto);
     }
