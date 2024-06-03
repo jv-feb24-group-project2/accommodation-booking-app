@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import ua.rent.masters.easystay.config.MapperConfig;
+import ua.rent.masters.easystay.configuration.MapperConfig;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.model.Accommodation;

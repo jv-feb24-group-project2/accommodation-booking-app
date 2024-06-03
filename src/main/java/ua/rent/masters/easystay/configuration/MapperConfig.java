@@ -1,4 +1,4 @@
-package ua.rent.masters.easystay.config;
+package ua.rent.masters.easystay.configuration;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.NullValueCheckStrategy;
