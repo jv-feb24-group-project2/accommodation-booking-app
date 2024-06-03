@@ -105,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validateAccommodationId(Long accommodationId) {
-        if (accommodationId == null || accommodationId < 0) {
+        if (accommodationId == null || accommodationId < 1) {
             throw new AccommodationException("Please add accommodation");
         }
     }
