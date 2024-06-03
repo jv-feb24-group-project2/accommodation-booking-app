@@ -1,17 +1,19 @@
 package ua.rent.masters.easystay.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.rent.masters.easystay.dto.PaymentDto;
+import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.PaymentService;
 
 @RestController
@@ -22,35 +24,36 @@ public class PaymentController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PaymentDto getPaymentById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id);
+    public PaymentResponseDto getPaymentById(@PathVariable Long id, User user) {
+        return paymentService.getPaymentById(id, user);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentDto> getAllPayments() {
-        return paymentService.getAllPayments();
+    public List<PaymentResponseDto> getAllPayments(User user) {
+        return paymentService.getAllPayments(user);
     }
 
-    @ResponseStatus(HttpStatus.OK) // In reality must have @ResponseStatus(HttpStatus.SEE_OTHER)
-    @PostMapping("/create-session")
-    public PaymentResponseDto createPaymentSession(@RequestParam Long bookingId) {
-        PaymentResponseDto responseDto = paymentService.createPaymentSession(bookingId);
-        //information must be return in headers somehow
-        return responseDto;
+    @ResponseStatus(HttpStatus.SEE_OTHER)
+    @GetMapping("/create-session/{bookingId}")
+    public void createPaymentSession(@PathVariable Long bookingId,
+                                     HttpServletResponse response) throws Exception {
+        String sessionUrl = paymentService.createPaymentSession(bookingId);
+        response.setHeader(HttpHeaders.LOCATION, sessionUrl);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/success")
-    public String handlePaymentSuccess(@RequestParam String sessionId) {
+    public PaymentResponseDto handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentSuccess(sessionId);
-        return "Successful!";
+        return paymentService.getPaymentBySessionId(sessionId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
-    public String handlePaymentCancel(String sessionId) {
+    public PaymentCancelResponseDto handlePaymentCancel(
+            @RequestParam("session_id") String sessionId) {
         paymentService.handlePaymentCanceling(sessionId);
-        return "Canceled!";
+        return new PaymentCancelResponseDto("I need BookingResponseDto to add more details");
     }
 }
