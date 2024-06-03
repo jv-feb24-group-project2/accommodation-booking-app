@@ -1,11 +1,9 @@
 package ua.rent.masters.easystay.service;
 
+import java.util.Set;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateProfileDto;
-import ua.rent.masters.easystay.dto.user.update.UserUpdateRoleDto;
 import ua.rent.masters.easystay.model.Role;
-
-import java.util.Set;
 
 public interface UserService {
     UserResponseDto getUser(String email);
