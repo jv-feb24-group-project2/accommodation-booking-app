@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
 
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Documented
 @Constraint(validatedBy = FieldMatchValidator.class)
 public @interface FieldMatch {
     String message() default "The fields must match";
