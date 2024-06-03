@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: add-users-table-chatid-column
+      id: add-users-table-chat_id-column
       author: Pavlo_Serikov
       changes:
         - addColumn:
@@ -10,5 +10,5 @@ databaseChangeLog:
                   name: chat_id
                   type: BIGINT
                   constraints:
-                    nullable: false
+                    nullable: true
                     unique: true
