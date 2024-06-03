@@ -49,6 +49,7 @@ public class SecurityConfig {
                                         "/accommodation",
                                         "/accommodation/{id}",
                                         "/error",
+                                        "/actuator/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**"
                                 )
