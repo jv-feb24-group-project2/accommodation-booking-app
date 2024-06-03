@@ -21,19 +21,19 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, unique = true)
+    @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private RoleName name;
 
     @Override
     public String getAuthority() {
-        return "ROLE_" + name.name();
+        return name.name();
     }
 
     public enum RoleName {
-        USER,
-        ADMIN,
-        MANAGER
+        ROLE_USER,
+        ROLE_ADMIN,
+        ROLE_MANAGER
     }
 }
 

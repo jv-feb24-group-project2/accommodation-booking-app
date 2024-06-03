@@ -13,7 +13,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getByName(Role.RoleName name) {
-        return roleRepository.getAllByName(name)
+        return roleRepository.findByName(name)
                 .orElseThrow(
                         () -> new IllegalArgumentException("No role found with name: " + name));
     }

@@ -16,7 +16,7 @@ public record UserRegistrationRequestDto(
         @Size(min = 6)
         String email,
         @NotBlank
-        @Size(min = 8)
+        @Size(min = 4)
         String password,
         @NotBlank
         String repeatPassword,
