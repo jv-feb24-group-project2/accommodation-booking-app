@@ -23,12 +23,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
-        if (userRepository.existsByEmail(requestDto.getEmail())) {
+        if (userRepository.existsByEmail(requestDto.email())) {
             throw new RuntimeException("User with email "
-                    + requestDto.getEmail() + " already exists");
+                    + requestDto.email() + " already exists");
         }
         User user = userMapper.toModel(requestDto);
-        user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(requestDto.password()));
         user.setEmail(user.getEmail());
         user.setRoles(Collections.singleton(roleService.getByName(USER)));
         User savedUser = userRepository.save(user);

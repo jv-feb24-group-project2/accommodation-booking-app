@@ -11,7 +11,7 @@ public record UserLoginRequestDto(
         @Email
         String email,
         @NotEmpty
-        @Size
+        @Size(min = 4)
         String password
 ){
 }

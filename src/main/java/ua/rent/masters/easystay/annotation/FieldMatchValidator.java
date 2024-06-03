@@ -10,6 +10,6 @@ public class FieldMatchValidator
 
     @Override
     public boolean isValid(UserRegistrationRequestDto userDto, ConstraintValidatorContext context) {
-        return Objects.equals(userDto.getPassword(), userDto.getRepeatPassword());
+        return Objects.equals(userDto.password(), userDto.repeatPassword());
     }
 }

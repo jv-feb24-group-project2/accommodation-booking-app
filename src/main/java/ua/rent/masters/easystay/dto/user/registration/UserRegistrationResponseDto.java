@@ -1,15 +1,18 @@
 package ua.rent.masters.easystay.dto.user.registration;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Data
-@Getter
-@Setter
-public class UserRegistrationResponseDto {
-    private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
+public record UserRegistrationResponseDto(
+        @NotNull
+        Long id,
+        @NotEmpty
+        @Size(min = 6)
+        String email,
+        @NotEmpty
+        String firstName,
+        @NotEmpty
+        String lastName
+) {
 }
