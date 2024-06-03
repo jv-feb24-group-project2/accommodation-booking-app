@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: Pavlo_Serikov
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: email, value: "testuser.admin@example.com"}
+              - column: {name: password, value: "$2a$10$as4122uW22NEPVzbf71HyOIgyfzsHUgCB.DpHghsGnlNv32XetYt6"}
+              - column: {name: first_name, value: "Tester"}
+              - column: {name: last_name, value: "Admin"}
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "testuser.manager@example.com" }
+              - column: { name: password, value: "$2a$10$as4122uW22NEPVzbf71HyOIgyfzsHUgCB.DpHghsGnlNv32XetYt6" }
+              - column: { name: first_name, value: "Tester" }
+              - column: { name: last_name, value: "Manager" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "testuser.user@example.com" }
+              - column: { name: password, value: "$2a$10$as4122uW22NEPVzbf71HyOIgyfzsHUgCB.DpHghsGnlNv32XetYt6" }
+              - column: { name: first_name, value: "Tester" }
+              - column: { name: last_name, value: "User" }
+
+  - changeSet:
+      id: add-another-user
+      author: Pavlo_Serikov
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'ADMIN')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.admin@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'MANAGER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.manager@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'USER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.user@example.com')"
