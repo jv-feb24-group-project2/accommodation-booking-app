@@ -6,5 +6,5 @@ import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.Role.RoleName;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> getAllByName(RoleName name);
+    Optional<Role> findByName(RoleName name);
 }

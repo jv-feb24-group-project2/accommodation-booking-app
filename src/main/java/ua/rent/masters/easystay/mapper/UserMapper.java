@@ -14,13 +14,13 @@ import ua.rent.masters.easystay.model.User;
 
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
-    UserResponseDto toResponseDto(User user);
+    UserResponseDto toDtoWithRoles(User user);
 
     UserRegistrationResponseDto toDto(User user);
 
     User toModel(UserRegistrationRequestDto user);
 
-    default Set<Role.RoleName> map(Set<Role> roles) {
+    default Set<Role.RoleName> rolesToRoleNames(Set<Role> roles) {
         return roles.stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet());
@@ -28,6 +28,9 @@ public interface UserMapper {
 
     @AfterMapping
     default void setRoles(@MappingTarget UserResponseDto userResponseDto, User user) {
-        userResponseDto.setRoles(map(user.getRoles()));
+        Set<Role.RoleName> roleNames = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        userResponseDto.roles().addAll(roleNames);
     }
 }

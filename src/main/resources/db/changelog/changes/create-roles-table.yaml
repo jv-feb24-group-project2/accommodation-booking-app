@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
               - column:
                   name: name
-                  type: enum('USER', 'MANAGER', 'ADMIN')
+                  type: varchar(50)
                   constraints:
                     nullable: false
                     unique: true
@@ -24,26 +24,3 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
-
-  - changeSet:
-      id: add-roles
-      author: Pavlo_Serikov
-      changes:
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: name
-                  value: ADMIN
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: name
-                  value: MANAGER
-        - insert:
-            tableName: roles
-            columns:
-              - column:
-                  name: name
-                  value: USER

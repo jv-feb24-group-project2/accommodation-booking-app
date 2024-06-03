@@ -1,8 +1,8 @@
 package ua.rent.masters.easystay.security.registration;
 
-import static ua.rent.masters.easystay.model.Role.RoleName.USER;
+import static ua.rent.masters.easystay.model.Role.RoleName.ROLE_USER;
 
-import java.util.Collections;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,9 +29,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
-        user.setEmail(user.getEmail());
-        user.setRoles(Collections.singleton(roleService.getByName(USER)));
+        user.setRoles(Set.of(roleService.getByName(ROLE_USER)));
         User savedUser = userRepository.save(user);
-        return userMapper.toResponseDto(savedUser);
+        return userMapper.toDtoWithRoles(savedUser);
     }
 }

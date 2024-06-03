@@ -22,19 +22,19 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Override
-    public UserResponseDto updateUserRole(Long id, Set<Role> roles) {
+    public UserResponseDto updateUserRoles(Long id, Set<Role> roles) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setRoles(roles);
         User updatedUser = userRepository.save(user);
-        return userMapper.toResponseDto(updatedUser);
+        return userMapper.toDtoWithRoles(updatedUser);
     }
 
     @Override
     public UserResponseDto getUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-        return userMapper.toResponseDto(user);
+        return userMapper.toDtoWithRoles(user);
     }
 
     @Override
@@ -47,6 +47,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userUpdateProfileDto.getLastName());
         user.setPassword(passwordEncoder.encode(userUpdateProfileDto.getPassword()));
         User savedUser = userRepository.save(user);
-        return userMapper.toResponseDto(savedUser);
+        return userMapper.toDtoWithRoles(savedUser);
     }
 }

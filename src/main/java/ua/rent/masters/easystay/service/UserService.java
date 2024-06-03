@@ -8,7 +8,7 @@ import ua.rent.masters.easystay.model.Role;
 public interface UserService {
     UserResponseDto getUser(String email);
 
-    UserResponseDto updateUserRole(Long id, Set<Role> roles);
+    UserResponseDto updateUserRoles(Long id, Set<Role> roles);
 
     UserResponseDto updateUserProfile(String email, UserUpdateProfileDto userUpdateProfileDto);
 }
