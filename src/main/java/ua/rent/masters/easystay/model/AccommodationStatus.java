@@ -1,7 +1,7 @@
 package ua.rent.masters.easystay.model;
 
-public enum NotificationStatus {
+public enum AccommodationStatus {
     CREATED,
     UPDATED,
-    STATUS_CHANGED
+    DELETED
 }
