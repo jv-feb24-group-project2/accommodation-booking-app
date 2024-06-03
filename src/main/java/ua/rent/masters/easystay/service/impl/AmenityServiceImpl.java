@@ -43,10 +43,7 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     public AmenityResponseDto update(Long id, AmenityRequestDto requestDto) {
-        Amenity amenity = amenityRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(
-                        "Can`t find an amenity with id: " + id)
-        );
+        checkAmenityExists(id);
         Amenity amenityForUpdate = amenityMapper.toModel(requestDto);
         amenityForUpdate.setId(id);
         return amenityMapper.toDto(amenityRepository.save(amenityForUpdate));
@@ -54,10 +51,13 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     public void deleteById(Long id) {
-        Amenity amenity = amenityRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(
-                        "Can`t find an amenity with id: " + id)
-        );
+        checkAmenityExists(id);
         amenityRepository.deleteById(id);
+    }
+
+    private void checkAmenityExists(Long id) {
+        if (!amenityRepository.existsById(id)) {
+            throw new EntityNotFoundException("Can`t find an amenity with id: " + id);
+        }
     }
 }
