@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.exception;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,8 +18,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -38,6 +38,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .toList();
         return getResponseEntity(HttpStatus.valueOf(status.value()), errors);
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleNotFound(EntityNotFoundException ex) {
         return getResponseEntity(NOT_FOUND, ex.getMessage());
