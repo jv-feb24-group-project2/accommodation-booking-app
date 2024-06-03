@@ -1,19 +1,17 @@
 package ua.rent.masters.easystay.service.impl;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateProfileDto;
-import ua.rent.masters.easystay.dto.user.update.UserUpdateRoleDto;
 import ua.rent.masters.easystay.mapper.UserMapper;
 import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.RoleService;
 import ua.rent.masters.easystay.service.UserService;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
