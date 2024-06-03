@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ua.rent.masters.easystay.model.User;
+import ua.rent.masters.easystay.exception.TelegramException;
 
 @Component
 public class TelegramBotHandler extends TelegramLongPollingBot {
-    private static final String MESSAGE = "You should register for notifications by link.";
-    private static final String SUCCESS_MESSAGE = "Thank you for subscribing!";
     private final String botUsername;
 
     private TelegramBotHandler(
@@ -29,31 +29,28 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        String message = MESSAGE;
-        if (update.getMessage().hasText()) {
-            String text = update.getMessage().getText();
-            if (text.startsWith("/start ")) {
-                String token = text.substring(7);
-                if (token.equals("valid")) { //Mock
-                    User user = new User();
-                    user.setChatId(chatId);
-                    //save(user);
-                    message = SUCCESS_MESSAGE;
-                }
-            }
+        if (update.hasMessage()) {
+            handleMessage(update.getMessage());
         }
-        sendMessage(chatId, message);
+        if (update.hasCallbackQuery()) {
+            handleCallbackQuery(update.getCallbackQuery());
+        }
     }
 
-    public void sendMessage(long chatId, String text) {
+    public void send(long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            throw new RuntimeException("Can't send message to chatId: " + chatId);
+            throw new TelegramException("Can't send message to chatId: " + message.getChatId(), e);
         }
+    }
+
+    private void handleCallbackQuery(CallbackQuery callbackQuery) {
+    }
+
+    private void handleMessage(Message updateMessage) {
     }
 }
