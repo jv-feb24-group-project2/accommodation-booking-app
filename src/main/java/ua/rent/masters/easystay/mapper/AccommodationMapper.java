@@ -13,11 +13,11 @@ import ua.rent.masters.easystay.model.Amenity;
 
 @Mapper(config = MapperConfig.class)
 public interface AccommodationMapper {
-    @Mapping(target = "amenityIds", source = "amenities", qualifiedByName = "setAmetityIds")
+    @Mapping(target = "amenityIds", source = "amenities", qualifiedByName = "setAmenityIds")
     AccommodationResponseDto toDto(Accommodation accommodation);
 
-    @Named("setAmetityIds")
-    default Set<Long> setAmetityIds(Set<Amenity> amenities) {
+    @Named("setAmenityIds")
+    default Set<Long> setAmenityIds(Set<Amenity> amenities) {
         return amenities.stream()
                 .map(Amenity::getId)
                 .collect(Collectors.toSet());
