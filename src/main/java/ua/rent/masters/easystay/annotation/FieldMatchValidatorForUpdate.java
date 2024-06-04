@@ -12,6 +12,9 @@ public class FieldMatchValidatorForUpdate
             UserUpdateProfileDto userUpdateProfileDto,
             ConstraintValidatorContext constraintValidatorContext
     ) {
-        return Objects.equals(userUpdateProfileDto.password(), userUpdateProfileDto.repeatPassword());
+        return Objects.equals(
+                userUpdateProfileDto.password(),
+                userUpdateProfileDto.repeatPassword()
+        );
     }
 }
