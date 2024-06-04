@@ -52,8 +52,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Create accommodation",
-            description = "Creates new accommodation. Users with roles MANAGER or ADMIN can create "
-                + "new accommodations.")
+            description = "Creates new accommodation. MANAGER can create new accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -64,8 +63,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Update accommodation",
-            description = "Update accommodations. MANAGERs can update their own accommodations, "
-                    + "and ADMINNs can update any accommodation.")
+            description = "Update accommodations. MANAGERs can update accommodations")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
@@ -76,8 +74,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Delete accommodation",
-            description = "Delete accommodations. MANAGERs can delete their own accommodations, "
-                    + "and ADMINNs can delete any accommodation.")
+            description = "Delete accommodations. MANAGERs can delete accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

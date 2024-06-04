@@ -32,8 +32,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Get all amenities",
-            description = "Get all amenities. User with any role can use this endpoint.")
-    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
+            description = "Get all amenities. MANAGER can use this endpoint.")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AmenityResponseDto> getAll(
@@ -45,8 +45,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Get amenity by id",
-            description = "Get amenity by id. User with any role can use this endpoint.")
-    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
+            description = "Get amenity by id. MANAGER can use this endpoint.")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AmenityResponseDto getById(@PathVariable Long id) {
@@ -55,10 +55,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Create amenity",
-            description = "Create amenity. Users with roles MANAGER or ADMIN can create "
-                    + "new amenities.")
-    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+            description = "Create amenity. MANAGER can new amenities.")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public AmenityResponseDto create(
@@ -68,10 +66,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Update amenities",
-            description = "Update amenities. MANAGERs can update amenities, they have created "
-                    + "and ADMINNs can update any amenity.")
-    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+            description = "Update amenities. MANAGERs can update amenities")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AmenityResponseDto update(@PathVariable Long id,
@@ -81,10 +77,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Delete amenities",
-            description = "Delete amenities. MANAGERs can delete their own amenities, "
-                    + "and ADMINNs can delete any amenity.")
-    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+            description = "Delete amenities. MANAGER can delete amenities.")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {

@@ -20,7 +20,7 @@ import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.PaymentService;
 
-@Tag(name = "Payments", description = "Endpoints for payment processing")
+@Tag(name = "Payments", description = "Endpoints for payments processing")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
@@ -29,8 +29,8 @@ public class PaymentController {
 
     @Operation(
             summary = "Get payment by id",
-            description = "USER can get payment for his bookings, MANAGER can get payment for "
-                    + "bookings with their accommodations, ADMIN can get any payment")
+            description = "USER can get payment for theirs bookings, MANAGER can get "
+                    + "any payment")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -41,8 +41,8 @@ public class PaymentController {
 
     @Operation(
             summary = "Get all payments",
-            description = "USER can get payments for his bookings, MANAGER can get payments for "
-                    + "bookings with their accommodations, ADMIN get all payment")
+            description = "USER can get all payments for theirs bookings, MANAGER get all "
+                    + "payments of all users")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
@@ -63,7 +63,7 @@ public class PaymentController {
 
     @Operation(
             summary = "Success URL",
-            description = "Payment system can access here to inform that payment was done")
+            description = "Payment system can access here to inform that payment was done.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/success")
     public PaymentResponseDto handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
@@ -73,7 +73,7 @@ public class PaymentController {
 
     @Operation(
             summary = "Cancel URL",
-            description = "Payment system can access here to inform that payment was canceled")
+            description = "Payment system can access here to inform that payment was canceled.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
     public PaymentCancelResponseDto handlePaymentCancel(
