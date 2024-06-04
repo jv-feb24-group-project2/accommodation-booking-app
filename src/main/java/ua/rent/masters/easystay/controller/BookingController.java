@@ -76,7 +76,7 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public List<BookingResponseDto> getBookingsByUserIdOrStatus(
+    public List<BookingResponseDto> findBookingsByUserIdOrStatus(
             @ParameterObject @PageableDefault(sort = "id", value = 5) Pageable pageable,
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) BookingStatus status) {
