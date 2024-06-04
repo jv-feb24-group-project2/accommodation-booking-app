@@ -1,14 +1,19 @@
 package ua.rent.masters.easystay.service;
 
-import java.util.Set;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateProfileDto;
-import ua.rent.masters.easystay.model.Role;
+import ua.rent.masters.easystay.dto.user.update.UserUpdateRolesDto;
+import ua.rent.masters.easystay.model.User;
 
 public interface UserService {
-    UserResponseDto getUser(String email);
 
-    UserResponseDto updateUserRoles(Long id, Set<Role> roles);
+    UserResponseDto updateUserRoles(
+            Long userId,
+            UserUpdateRolesDto userUpdateRolesDto
+    );
 
-    UserResponseDto updateUserProfile(String email, UserUpdateProfileDto userUpdateProfileDto);
+    UserResponseDto updateUserProfile(
+            User user,
+            UserUpdateProfileDto userUpdateProfileDto
+    );
 }

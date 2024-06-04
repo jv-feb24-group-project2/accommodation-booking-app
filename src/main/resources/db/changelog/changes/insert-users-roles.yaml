@@ -17,7 +17,34 @@ databaseChangeLog:
             columns:
               - column:
                   name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'ROLE_USER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.admin@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
                   valueComputed: "(SELECT id FROM roles WHERE name = 'ROLE_MANAGER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.admin@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'ROLE_MANAGER')"
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email = 'testuser.manager@example.com')"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'ROLE_USER')"
               - column:
                   name: user_id
                   valueComputed: "(SELECT id FROM users WHERE email = 'testuser.manager@example.com')"
