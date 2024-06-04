@@ -9,12 +9,10 @@ public interface UserService {
 
     UserResponseDto updateUserRoles(
             Long userId,
-            User user,
             UserUpdateRolesDto userUpdateRolesDto
     );
 
     UserResponseDto updateUserProfile(
-            String email,
             User user,
             UserUpdateProfileDto userUpdateProfileDto
     );

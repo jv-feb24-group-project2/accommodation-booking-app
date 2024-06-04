@@ -31,15 +31,14 @@ public class UserController {
     @PutMapping("/{id}/role")
     public UserResponseDto updateRoles(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateRolesDto userUpdateRolesDto) {
-        return userService.updateUserRoles(id, user, userUpdateRolesDto);
+        return userService.updateUserRoles(id, userUpdateRolesDto);
     }
 
     @PutMapping("/me")
     public UserResponseDto updateUserProfile(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateProfileDto userUpdateProfileDto) {
-        return userService.updateUserProfile(user.getEmail(), user, userUpdateProfileDto);
+        return userService.updateUserProfile(user, userUpdateProfileDto);
     }
 }
