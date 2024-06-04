@@ -25,7 +25,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN', 'ROLE_MANAGER' )")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public UserResponseDto getUser(@AuthenticationPrincipal User user) {
         return userMapper.toDtoWithRoles(user);
     }
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN', 'ROLE_MANAGER' )")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public UserResponseDto updateUserProfile(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateProfileDto userUpdateProfileDto) {
