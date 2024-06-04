@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final String PATH_CANCEL = "/api/payments/cancel";
     private static final String SPACE = " ";
     private static final String TO = "to";
-    @Value("${app.payment.base.url}")
+    @Value("${app.base.url}")
     private String baseUrl;
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;

@@ -27,9 +27,9 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
 
     private TelegramBotHandler(
             @Lazy NotificationService notificationService,
-            @Value("${BOT_TOKEN}") String botToken,
-            @Value("${BOT_USERNAME}") String botUsername,
-            @Value("${BASE_URL}") String baseUrl
+            @Value("${telegram.bot.token}") String botToken,
+            @Value("${telegram.bot.username}") String botUsername,
+            @Value("${app.base.url}") String baseUrl
     ) {
         super(botToken);
         this.botUsername = botUsername;
