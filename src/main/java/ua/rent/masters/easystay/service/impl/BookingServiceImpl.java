@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.dto.request.BookingRequestDto;
 import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.response.BookingResponseDto;
@@ -25,8 +24,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto create(BookingRequestDto requestDto) {
-        AccommodationResponseDto byId = accommodationService
-                .findById(requestDto.accommodationId());
+        accommodationService.findById(requestDto.accommodationId());
         if (requestDto.checkInDate().isBefore(LocalDate.now())) {
             throw new BookingException(
                     "You can't specify a check-in date that is before today's date.");
