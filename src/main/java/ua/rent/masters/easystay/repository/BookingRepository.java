@@ -1,6 +1,5 @@
 package ua.rent.masters.easystay.repository;
 
-<<<<<<<<< Temporary merge branch 1
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +15,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long>,
     Optional<List<Booking>> findByStatus(BookingStatus status);
 
     Optional<List<Booking>> findByUserIdAndStatus(Long userId, BookingStatus status);
+
+    List<Booking> findAllBookingByAccommodationId(Long id);
 }

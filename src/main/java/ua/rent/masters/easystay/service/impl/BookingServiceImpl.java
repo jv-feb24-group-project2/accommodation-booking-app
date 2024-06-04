@@ -25,13 +25,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto create(BookingRequestDto requestDto) {
         accommodationService.findById(requestDto.accommodationId());
-        if (requestDto.checkInDate().isBefore(LocalDate.now())) {
-            throw new BookingException(
-                    "You can't specify a check-in date that is before today's date.");
-        }
-        if (requestDto.checkOutDate().isBefore(requestDto.checkInDate())) {
-            throw new BookingException("Checkout date can`t be earlier that checkin date");
-        }
+        validateBookingDto(requestDto);
+
         Booking booking = bookingMapper.toEntity(requestDto);
         booking.setStatus(BookingStatus.PENDING);
 
@@ -111,5 +106,31 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingException("Booking with id " + bookingId
                         + "does not exist"));
+    }
+
+    private boolean isBookingOverlapping(List<Booking> existingBookings,
+                                         BookingRequestDto requestDto) {
+        return existingBookings.stream()
+                .anyMatch(b -> !(requestDto.checkOutDate()
+                        .isBefore(b.getCheckInDate())
+                        || requestDto.checkInDate()
+                        .isAfter(b.getCheckOutDate())));
+    }
+
+    private void validateBookingDto(BookingRequestDto requestDto) {
+        List<Booking> allBookingByAccommodationId = bookingRepository
+                .findAllBookingByAccommodationId(requestDto.accommodationId());
+
+        if (isBookingOverlapping(allBookingByAccommodationId, requestDto)) {
+            throw new BookingException(
+                    "The accommodation is already booked for the selected dates.");
+        }
+        if (requestDto.checkInDate().isBefore(LocalDate.now())) {
+            throw new BookingException(
+                    "You can't specify a check-in date that is before today's date.");
+        }
+        if (requestDto.checkOutDate().isBefore(requestDto.checkInDate())) {
+            throw new BookingException("Checkout date can`t be earlier that checkin date");
+        }
     }
 }
