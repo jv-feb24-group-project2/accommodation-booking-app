@@ -86,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
         Long userId = user.getId();
         Payment payment = paymentRepository.findByIdAndBookingUserId(paymentId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Cant find payment with id: "
-                        + paymentId + " and user id: " + userId));
+                        + paymentId + " for user id: " + userId));
         return paymentMapper.toDto(payment);
     }
 

@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +26,16 @@ public class PaymentController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PaymentResponseDto getPaymentById(@PathVariable Long id, User user) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public PaymentResponseDto getPaymentById(@PathVariable Long id,
+                                             @AuthenticationPrincipal User user) {
         return paymentService.getPaymentById(id, user);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentResponseDto> getAllPayments(User user) {
+    public List<PaymentResponseDto> getAllPayments(@AuthenticationPrincipal User user) {
         return paymentService.getAllPayments(user);
     }
 
