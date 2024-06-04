@@ -73,12 +73,12 @@ public class TelegramNotificationService implements NotificationService {
         }
         String message = switch (status) {
             case PENDING -> "Payment pending for booking ID%s, Amount: $%s.".formatted(
-                    payment.getBookingId(), payment.getAmountToPay());
+                    payment.getBooking().getId(), payment.getAmountToPay());
             case PAID -> "Payment successful for booking ID%s, Amount: $%s.".formatted(
-                    payment.getBookingId(), payment.getAmountToPay());
+                    payment.getBooking().getId(), payment.getAmountToPay());
             case EXPIRED ->
                     "Payment expired for booking ID%s. Please re-initiate the payment process."
-                            .formatted(payment.getBookingId());
+                            .formatted(payment.getBooking().getId());
         };
         botHandler.send(user.getChatId(), message);
     }
