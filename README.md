@@ -27,152 +27,114 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 
 ### 🚀 Current Functionalities
 - ##### Authentication
-    - Register a new user: POST /api/auth/register
-    - Authenticate a user: POST /api/auth/login
-- ##### Accommodation
-    - Get accommodations from catalog: GET /api/accommodations
-    - Get accommodation for id: GET /api/accommodations/{id}
-    - Create a new accommodation(only for roles MANAGER and ADMIN): POST /api/accommodations
-    - Update a specific accommodation(only for role ADMIN): PUT /api/accommodations/{id}
-    - Delete a specific accommodation (only for role ADMIN): DELETE /api/accommodations/{id}
-- ##### Amenity (only for roles MANAGER and ADMIN)
-    - Get all accommodations' amenities: GET /api/amenities
-    - Get an amenity by id: GET /api/amenities/{id}
-    - Add a new amenity: POST /api/amenities
-    - Update a current category: PUT /api/amenities/{id}
-    - Delete a current category: /api/amenities/{id}
-- ##### Shopping Cart
-    - Get a user's shopping cart: GET /api/cart
-    - Add book to the shopping cart: POST /api/cart
-    - Update quantity of a book in the shopping cart: PUT /api/cart/cart-items/{cartItemId}
-    - Remove a book from the shopping cart: DELETE /api/cart/cart-items/{cartItemId}
-- ##### Payment
-    - Create an order: POST /api/orders
-    - Get history of orders: GET /api/orders
-    - Get all OrderItems for a specific order: GET /api/orders/{orderId}/items
-    - Get a specific OrderItem within an order: GET /api/orders/{orderId}/items/{itemId}
-    - Update order status: PATCH /api/orders/{id}
+| HTTP method |Endpoint | Description |
+|----|----------|----------|
+| POST |/api/auth/register | Register a new user |
+| POST   | /api/auth/login |Authenticate a user  |
+
+- ##### Accommodations
+|HTTP method   |  Endpoint | Role          | Description  |
+|---|---|---------------|---|
+|   Get| /api/accommodations  | All           | Get accommodations from catalog  |
+| GET  | /api/accommodations/{id}  | All           | Get accommodation for id: GET /api/accommodations/{id}  |
+|  POST |  /api/accommodations | MANAGER/ADMIN | /api/accommodations  |
+|  PUT |   /api/accommodations/{id}|     ADMIN          |Update a specific accommodation   |
+| DELETE  | /api/accommodations/{id}  |  ADMIN             | Delete a specific accommodation  |
+|   |   |               |   |
+
+- ##### Amenity 
+
+|  HTTP method  |  Endpoint |  Role  | Description  |
+|---|---|---|---|
+| GET  |  /api/amenities | MANAGER/ADMIN  |  Get all accommodations' amenities |
+| GET  | /api/amenities/{id}  | MANAGER/ADMIN  |  Get an amenity by id |
+|  POST | /api/amenities  |  MANAGER/ADMIN | Add a new amenity  |
+|  PUT  |/api/amenities/{id}   |  MANAGER/ADMIN | Update a current category  |
+| DELETE   |  /api/amenities/{id} |   MANAGER/ADMIN|  Delete a current category |
+
+- ##### Payment 
+| HTTP method | Endpoint  | Role  | Description  |
+|-------------|---|-------|---|
+| GET         |  /api/payments | USER/MANAGER |  Get payments history of certain customer |
+| GET         |   /api/payments/{id}|    USER/MANAGER   | Get the payment by id  |
+| GET         |  /api/payments/create-session/{bookingId} |     USER  | Init payment sessions for booking transactions  |
+| GET         | /api/payments/success/  |    USER    |  Redirection after successfully processing of payment |
+| GET         |/api/payments/cancel/   |   USER     | Redirection after unsuccessfully processing of payment  |
+
+- ##### Booking
+| HTTP method | Endpoint           |   Role  | Description                             |
+|-------------|--------------------|---|-----------------------------------------|
+| POST        | /api/bookings      | USER   | Creat new accommodation bookings        |
+| GET         | /api/bookings/my   | USER  | Get booking history of certain customer |
+| GET         | /api/bookings/{id} |  USER | Get a current booking                   |
+| GET         |  /api/bookings                    | MANAGER   |       Retrieves bookings based on user ID and their status                                   |
+| PUT         |/api/bookinUSERgs/{id}            | USER/MANAGER  | Update a current booking                |
+| DELETE      |/api/bookinUSERgs/{id}            | USER  | Delete a current booking                |
+
+  
 - #####  Swagger Documentation
     - the API documentation at http://localhost:8080/swagger-ui.html.
     - You can explore all available endpoints, their descriptions, request parameters, and response schemas.
+      **[Use Postman collection](https://rent-masters.postman.co/workspace/Accommodation-Booking-APP~2719fff1-5c95-44a8-8913-0a604ac879f4/overview)**
+      
 
-How to use demo:
-Use Swagger UI
-Use Postman collection
+### 🌟 Getting Started
+##### Prerequisites
+- Java 17+
+- Maven 4+
+- MySQL 8+
+- Docker
+##### Installation
+To run the application locally, follow these steps:
 
-If you want to use manager's endpoints, fill free to use credentials below:
+1. Clone the Repository
+```
+git clone https://github.com/jv-feb24-group-project2/accommodation-booking-app.git 
+cd accommodation-booking-app
+```
+2. Configure environment variables:
+   Create a .env file in the project root directory and populate it with the following environment variables:
+```env
+- DB_USERNAME=your_db_username  
+- DB_PASSWORD=your_db_password  
+- DB_LOCAL_PORT=3306
+- DB_NAME=easy_stay
+- STRIPE_API_KEY=sk_test_00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-{
-"email":"manager@example.com",
-"password":"12345678"
-}
-Note: The token expires after 1 hour, so you must log in again.
-
-🛠️Technologies Used
-Spring Boot: Framework for building Java-based web applications.
-Spring Security: Provides authentication and authorization.
-Spring Data JPA: Simplifies database interactions.
-Spring Web: For building web-based applications with Spring MVC.
-Springdoc OpenAPI: Generates API documentation.
-MySQL: Database management system.
-Hibernate: As the ORM tool.
-Liquibase: Database migration tool.
-MapStruct: Object mapping framework.
-JUnit: Testing framework.
-Mockito: Mocking framework for tests.
-Maven: For project management and dependency management.
-Testcontainers: Provides lightweight, throwaway instances of databases, selenium web servers, or anything else that can run in a Docker container.
-Docker: Containerization platform.
-🌎Features
-📝Swagger Documentation
-Swagger is integrated into the project to provide comprehensive API documentation and facilitate testing of endpoints. With Swagger, you can visualize and interact with the API's resources without having any of the implementation logic in place.
-
-To access the Swagger UI and explore the API documentation:
-
-Once the application is running, navigate to http://localhost:8080/api/swagger-ui/index.html in your web browser.
-
-You will see the Swagger UI interface, where you can view all available endpoints, their descriptions, request parameters, and response schemas.
-
-Use the interactive features of Swagger UI to make requests directly from the browser and observe the responses.
-
-🔑Authentication
-Authentication Endpoints: Users can register and log in.
-📗Book
-User's Endpoints: View and search books.
-Manager's and Admin's Endpoints: Add, update, and delete books.
-📑Category
-User's Endpoints: View categories.
-Manager's and Admin's Endpoints: Create, update, and delete book categories.
-🛒Shopping Cart
-User's Endpoints: Add books to the cart, view cart items, update and remove items from the cart.
-🛍️Order
-User's Endpoints: Complete the purchase, view past orders and their details.
-Manager's and Admin's Order Endpoints: Update order statuses.
-🚀Setup Instructions
-🧰Required
-Docker
-Docker Compose
-🏗️Installation
-Clone the Repository:
-
-git clone https://github.com/k0sm0naft/java-online-book-store.git
-cd java-online-book-store
-Set Environment Variables:
-
-Create a .env file in the project root directory and populate it with the following environment variables:
-
-MYSQLDB_USER=your_db_user_name
-MYSQLDB_ROOT_PASSWORD=your_db_password
-JWT_SECRET=yourVeryLongSecretStringForJwtSecretKey
-JWT_EXPIRATION=3600000
-
-MYSQLDB_DATABASE=your_db_name
-MYSQLDB_LOCAL_PORT=3306
-MYSQLDB_DOCKER_PORT=3306
-
-SPRING_LOCAL_PORT=8080
-SPRING_DOCKER_PORT=8080
-DEBUG_PORT=5005
-Install dependencies and build the project:
-
+- BOT_USERNAME=your-bot-username
+- BOT_TOKEN=your-bot-token
+- BASE_URL=your-base-url
+- JWT_SECRET=topsecret2024topsecret2024topsecret2024topsecret2024
+```
+4. Install dependencies and build the project:
+```
 mvn clean install
-Build and Run the Docker Containers:
+```
+5. Run the application:
+```
+mvn spring-boot:run
+```
+The server will start on http://localhost:8080.
 
-docker-compose up
-Access the Application:
+##### Using Docker
+1. Build the Docker image:
+```
+docker build -t accommodation-booking-app .
+```
+2. Run the Docker container:
+```
+docker run -d -p 8080:8080 --name accommodation-booking-app accommodation-booking-app
+```
 
-Open your browser and go to http://localhost:8080/api/swagger-ui.html to access the Swagger API documentation.
+##### 📄 Challenges and Solutions
+Challenge 1: Securing the API
+Solution: Implemented Spring Security to manage authentication and authorization, ensuring that sensitive endpoints are protected.
 
-Stop and Remove Containers: To stop and remove the containers created by the Compose file, use the docker-compose down command:
+Challenge 2: Database Management
+Solution: Utilized Spring Data JPA and Hibernate for efficient database interactions and ORM capabilities.
 
-docker-compose down
-🧪Running Tests
-To run tests, use the following command:
+Challenge 3: Telegram Notifications Service
+Solution: Integrated Telegram Notifications Service to providing users with instant notifications about booking confirmations, payment statuses, new property listings, and important updates directly through Telegram.
 
-mvn test
-Testing with JUnit and Mockito
-
-The project uses JUnit for unit testing and Mockito for mocking dependencies. This ensures that the application logic is tested in isolation, making the tests more reliable and easier to maintain.
-
-📬Postman Collection
-To facilitate testing, a Postman collection has been provided. You can import it into Postman and use it to test the API endpoints.
-
-Run in Postman
-
-To chose URL:
-After you fork collection, you can register a new user, or use credentials below in the text.
-After log in, the generated token will be automatically added to all next requests that required authentication.
-User
-Manager
-👊Challenges Faced
-Security: Setting up robust authentication and authorization using Spring Security.
-
-Database Management: Utilized Spring Data JPA and Hibernate for efficient database interactions and ORM capabilities.
-
-Database Migrations: Implementing database migrations with Liquibase to ensure consistency across different environments.
-
-API Documentation: Ensuring comprehensive API documentation with Springdoc OpenAPI.
-
-👷Author
-LinkedIn: Artem Akymenko
-Github: @k0sm0naft
+Challenge 4: Stripe
+Solution: Understanding the intricacies of payment session creation proved crucial to ensuring a seamless payment process.
