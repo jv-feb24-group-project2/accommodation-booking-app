@@ -21,10 +21,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final String ERRORS_KEY = "errors";
-    private static final String STATUS_KEY = "status";
+    private static final String ERRORS = "errors";
     private static final String SPACE = " ";
-    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String TIMESTAMP = "timestamp";
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -47,8 +46,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     private ResponseEntity<Object> getResponseEntity(HttpStatus status, Object error) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(status);
         Map<String, Object> detail = new LinkedHashMap<>();
-        detail.put("error", error);
-        detail.put("timestamp", LocalDateTime.now().toString());
+        detail.put(ERRORS, error);
+        detail.put(TIMESTAMP, LocalDateTime.now().toString());
         problemDetail.setProperties(detail);
         return ResponseEntity.of(problemDetail).build();
     }
