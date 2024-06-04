@@ -33,11 +33,8 @@ public class TelegramNotificationService implements NotificationService {
     private final UserRepository userRepository;
 
     @Override
-    public void notifyAboutAccommodationStatus(Accommodation accommodation, User user,
+    public void notifyAboutAccommodationStatus(Accommodation accommodation,
             AccommodationStatus status) {
-        if (user.getChatId() == null) {
-            return;
-        }
         String message = switch (status) {
             case CREATED ->
                     "New accommodation listed: %s in %s, $%s/day."
@@ -51,7 +48,7 @@ public class TelegramNotificationService implements NotificationService {
                     "Accommodation removed: %s in %s."
                             .formatted(accommodation.getType(), accommodation.getLocation());
         };
-        botHandler.send(user.getChatId(), message);
+        botHandler.send(USER_ID_INDEX, message);
     }
 
     @Override
