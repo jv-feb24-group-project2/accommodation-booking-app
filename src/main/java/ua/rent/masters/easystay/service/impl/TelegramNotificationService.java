@@ -21,17 +21,66 @@ public class TelegramNotificationService implements NotificationService {
     @Override
     public void notifyAboutAccommodationStatus(Accommodation accommodation, User user,
             AccommodationStatus status) {
-
+        if (user.getChatId() == null) {
+            return;
+        }
+        String message = switch (status) {
+            case CREATED ->
+                    "New accommodation listed: %s in %s, $%s/day."
+                            .formatted(accommodation.getType(), accommodation.getLocation(),
+                                    accommodation.getDailyRate());
+            case UPDATED ->
+                    "Accommodation updated: %s in %s, new rate $%s/day."
+                            .formatted(accommodation.getType(), accommodation.getLocation(),
+                                    accommodation.getDailyRate());
+            case DELETED ->
+                    "Accommodation removed: %s in %s."
+                            .formatted(accommodation.getType(), accommodation.getLocation());
+        };
+        botHandler.send(user.getChatId(), message);
     }
 
     @Override
     public void notifyAboutBookingStatus(Booking booking, User user, BookingStatus status) {
-
+        if (user.getChatId() == null) {
+            return;
+        }
+        String message = switch (status) {
+            case PENDING ->
+                    "Your booking for Accommodation ID%s from %s to %s is pending."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+                            booking.getCheckOutDate());
+            case CONFIRMED ->
+                    "Your booking for Accommodation ID%s from %s to %s is confirmed."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+                            booking.getCheckOutDate());
+            case CANCELED ->
+                    "Your booking for Accommodation ID%s from %s to %s has been canceled."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+                            booking.getCheckOutDate());
+            case EXPIRED ->
+                    "Your booking for Accommodation ID%s from %s to %s has expired."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+                            booking.getCheckOutDate());
+        };
+        botHandler.send(user.getChatId(), message);
     }
 
     @Override
     public void notifyAboutPaymentStatus(Payment payment, User user, PaymentStatus status) {
-
+        if (user.getChatId() == null) {
+            return;
+        }
+        String message = switch (status) {
+            case PENDING -> "Payment pending for booking ID%s, Amount: $%s.".formatted(
+                    payment.getBooking().getId(), payment.getAmountToPay());
+            case PAID -> "Payment successful for booking ID%s, Amount: $%s.".formatted(
+                    payment.getBooking().getId(), payment.getAmountToPay());
+            case EXPIRED ->
+                    "Payment expired for booking ID%s. Please re-initiate the payment process."
+                            .formatted(payment.getBooking().getId());
+        };
+        botHandler.send(user.getChatId(), message);
     }
 
     @Override

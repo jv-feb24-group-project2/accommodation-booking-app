@@ -1,4 +1,4 @@
-package ua.rent.masters.easystay.configuration;
+package ua.rent.masters.easystay.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
