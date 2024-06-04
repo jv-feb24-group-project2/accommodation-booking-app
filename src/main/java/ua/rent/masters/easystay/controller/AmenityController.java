@@ -66,7 +66,7 @@ public class AmenityController {
 
     @Operation(
             summary = "Update amenities",
-            description = "Update amenities. MANAGERs can update amenities")
+            description = "Update amenities. MANAGER can update amenities")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")

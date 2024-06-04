@@ -32,7 +32,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Get all accommodations",
-            description = "Get all accommodations. User with any role can use this endpoint.")
+            description = "Get all accommodations. User with any Role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AccommodationResponseDto> getAll(@RequestParam(defaultValue = "0") int page,
@@ -43,7 +43,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Get accommodations by id",
-            description = "Get accommodation. User with any role can use this endpoint.")
+            description = "Get accommodation. User with any Role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AccommodationResponseDto getById(@PathVariable Long id) {
@@ -63,7 +63,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Update accommodation",
-            description = "Update accommodations. MANAGERs can update accommodations")
+            description = "Update accommodations. MANAGER can update accommodations")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
@@ -74,7 +74,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Delete accommodation",
-            description = "Delete accommodations. MANAGERs can delete accommodations.")
+            description = "Delete accommodations. MANAGER can delete accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
