@@ -1,17 +1,19 @@
 package ua.rent.masters.easystay.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.dto.request.BookingRequestDto;
 import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.response.BookingResponseDto;
-import ua.rent.masters.easystay.exeption.AccommodationException;
 import ua.rent.masters.easystay.exeption.BookingException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.repository.BookingRepository;
+import ua.rent.masters.easystay.service.AccommodationService;
 import ua.rent.masters.easystay.service.BookingService;
 
 @Service
@@ -19,15 +21,18 @@ import ua.rent.masters.easystay.service.BookingService;
 public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
+    private final AccommodationService accommodationService;
 
     @Override
     public BookingResponseDto create(BookingRequestDto requestDto) {
-        validateAccommodationId(requestDto.accommodationId());
-        if (requestDto.checkInDate() == null) {
-            throw new RuntimeException("Please insert Checkin date");
+        AccommodationResponseDto byId = accommodationService
+                .findById(requestDto.accommodationId());
+        if (requestDto.checkInDate().isBefore(LocalDate.now())) {
+            throw new BookingException(
+                    "You can't specify a check-in date that is before today's date.");
         }
-        if (requestDto.checkOutDate() == null) {
-            throw new RuntimeException("Please insert Checkout date");
+        if (requestDto.checkOutDate().isBefore(requestDto.checkInDate())) {
+            throw new BookingException("Checkout date can`t be earlier that checkin date");
         }
         Booking booking = bookingMapper.toEntity(requestDto);
         booking.setStatus(BookingStatus.PENDING);
@@ -102,12 +107,6 @@ public class BookingServiceImpl implements BookingService {
     public void deleteById(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         bookingRepository.deleteById(booking.getId());
-    }
-
-    private void validateAccommodationId(Long accommodationId) {
-        if (accommodationId == null || accommodationId < 1) {
-            throw new AccommodationException("Please add accommodation");
-        }
     }
 
     private Booking getBookingByIdOrThrowException(Long bookingId) {
