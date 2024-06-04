@@ -1,7 +1,5 @@
 package ua.rent.masters.easystay.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +12,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import ua.rent.masters.easystay.security.JwtAuthenticationFilter;
 
 @EnableMethodSecurity
@@ -24,6 +24,7 @@ import ua.rent.masters.easystay.security.JwtAuthenticationFilter;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -48,13 +49,19 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .httpBasic(withDefaults())
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> handlerExceptionResolver.resolveException(
+                request, response, null, authException);
     }
 
     @Bean
