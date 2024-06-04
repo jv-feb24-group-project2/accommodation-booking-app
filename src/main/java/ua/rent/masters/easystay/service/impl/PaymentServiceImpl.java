@@ -13,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.exception.EntityNotFoundException;
-import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.mapper.PaymentMapper;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Booking;
@@ -24,12 +23,13 @@ import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.PaymentRepository;
+import ua.rent.masters.easystay.repository.UserRepository;
+import ua.rent.masters.easystay.service.NotificationService;
 import ua.rent.masters.easystay.service.PaymentService;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-
     private static final String BOOKING = "Booking";
     private static final String FROM = "from";
     private static final String PATH_SUCCESS = "/api/payments/success";
@@ -43,7 +43,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final AccommodationRepository accommodationRepository;
     private final StripePaymentService stripePaymentService;
     private final PaymentMapper paymentMapper;
-    private final BookingMapper bookingMapper;
+    private final NotificationService telegramNotificationService;
+    private final UserRepository userRepository;
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
@@ -56,6 +57,11 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = createPayment(booking);
 
         paymentRepository.save(payment);
+
+        User user = getUser(payment.getBooking());
+        telegramNotificationService.notifyAboutPaymentStatus(payment,
+                user, PaymentStatus.PENDING);
+
         return payment.getSessionUrl();
     }
 
@@ -67,6 +73,16 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
+        User user = getUser(booking);
+        telegramNotificationService.notifyAboutPaymentStatus(payment,
+                user, PaymentStatus.PAID);
+        telegramNotificationService.notifyAboutBookingStatus(booking,
+                user, BookingStatus.CONFIRMED);
+    }
+
+    private User getUser(Booking booking) {
+        return userRepository.findById(booking.getUserId()).orElseThrow(
+            () -> new EntityNotFoundException("Can't find user with id: " + booking.getUserId()));
     }
 
     @Override
