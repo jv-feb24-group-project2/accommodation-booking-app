@@ -27,7 +27,6 @@ import ua.rent.masters.easystay.service.AmenityService;
 public class AmenityController {
     private final AmenityService amenityService;
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AmenityResponseDto> getAll(
@@ -37,14 +36,13 @@ public class AmenityController {
         return amenityService.findAll(pageable);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AmenityResponseDto getById(@PathVariable Long id) {
         return amenityService.findById(id);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public AmenityResponseDto create(
@@ -52,7 +50,7 @@ public class AmenityController {
         return amenityService.save(requestDto);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AmenityResponseDto update(@PathVariable Long id,
@@ -60,7 +58,7 @@ public class AmenityController {
         return amenityService.update(id,requestDto);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
