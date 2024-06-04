@@ -1,5 +1,9 @@
 package ua.rent.masters.easystay.service.impl;
 
+import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
+import static ua.rent.masters.easystay.model.AccommodationStatus.DELETED;
+import static ua.rent.masters.easystay.model.AccommodationStatus.UPDATED;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,12 +27,15 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AccommodationRepository accommodationRepository;
     private final AmenityRepository amenityRepository;
     private final AccommodationMapper accommodationMapper;
+    private final TelegramNotificationService telegramNotificationService;
 
     @Override
     public AccommodationResponseDto save(AccommodationRequestDto requestDto) {
         validateAmenitiesExist(requestDto.amenityIds());
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
-        return accommodationMapper.toDto(accommodationRepository.save(accommodation));
+        Accommodation savedAccommodation = accommodationRepository.save(accommodation);
+        telegramNotificationService.notifyAboutAccommodationStatus(savedAccommodation, CREATED);
+        return accommodationMapper.toDto(savedAccommodation);
     }
 
     @Override
@@ -55,15 +62,20 @@ public class AccommodationServiceImpl implements AccommodationService {
         }
         Accommodation accommodationForUpdate = accommodationMapper.toModel(requestDto);
         accommodationForUpdate.setId(id);
-        return accommodationMapper.toDto(accommodationRepository.save(accommodationForUpdate));
+        Accommodation savedAccommodationForUpdate =
+                accommodationRepository.save(accommodationForUpdate);
+        telegramNotificationService.notifyAboutAccommodationStatus(
+                savedAccommodationForUpdate, UPDATED);
+        return accommodationMapper.toDto(savedAccommodationForUpdate);
     }
 
     @Override
     public void deleteById(Long id) {
-        if (!accommodationRepository.existsById(id)) {
-            throw new EntityNotFoundException("Can`t find an accommodation with id: " + id);
-        }
+        Accommodation accommodation = accommodationRepository.findById(id).orElseThrow(() ->
+            new EntityNotFoundException("Can`t find an accommodation with id: " + id));
+
         accommodationRepository.deleteById(id);
+        telegramNotificationService.notifyAboutAccommodationStatus(accommodation, DELETED);
     }
 
     public void validateAmenitiesExist(Set<Long> amenityIds) {

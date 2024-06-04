@@ -39,14 +39,17 @@ public class TelegramNotificationService implements NotificationService {
             Accommodation accommodation, AccommodationStatus status
     ) {
         String message = switch (status) {
-            case CREATED -> "New accommodation listed: %s in %s, $%s/day."
-                    .formatted(accommodation.getType(), accommodation.getLocation(),
-                            accommodation.getDailyRate());
-            case UPDATED -> "Accommodation updated: %s in %s, new rate $%s/day."
-                    .formatted(accommodation.getType(), accommodation.getLocation(),
-                            accommodation.getDailyRate());
-            case DELETED -> "Accommodation removed: %s in %s."
-                    .formatted(accommodation.getType(), accommodation.getLocation());
+            case CREATED ->
+                    "New accommodation listed: %s in %s, $%s/day."
+                            .formatted(accommodation.getType(), accommodation.getLocation(),
+                                    accommodation.getDailyRate());
+            case UPDATED ->
+                    "Accommodation updated: %s in %s, new rate $%s/day."
+                            .formatted(accommodation.getType(), accommodation.getLocation(),
+                                    accommodation.getDailyRate());
+            case DELETED ->
+                    "Accommodation removed: %s in %s."
+                            .formatted(accommodation.getType(), accommodation.getLocation());
         };
         sendToAllManagers(message);
     }
@@ -57,17 +60,21 @@ public class TelegramNotificationService implements NotificationService {
             return;
         }
         String message = switch (status) {
-            case PENDING -> "Your booking for Accommodation ID%s from %s to %s is pending."
-                    .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+            case PENDING ->
+                    "Your booking for Accommodation ID%s from %s to %s is pending."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
                             booking.getCheckOutDate());
-            case CONFIRMED -> "Your booking for Accommodation ID%s from %s to %s is confirmed."
-                    .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+            case CONFIRMED ->
+                    "Your booking for Accommodation ID%s from %s to %s is confirmed."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
                             booking.getCheckOutDate());
-            case CANCELED -> "Your booking for Accommodation ID%s from %s to %s has been canceled."
-                    .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+            case CANCELED ->
+                    "Your booking for Accommodation ID%s from %s to %s has been canceled."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
                             booking.getCheckOutDate());
-            case EXPIRED -> "Your booking for Accommodation ID%s from %s to %s has expired."
-                    .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
+            case EXPIRED ->
+                    "Your booking for Accommodation ID%s from %s to %s has expired."
+                            .formatted(booking.getAccommodationId(), booking.getCheckInDate(),
                             booking.getCheckOutDate());
         };
         botHandler.send(user.getChatId(), message);
