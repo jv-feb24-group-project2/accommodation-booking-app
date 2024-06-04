@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-foreign-key-to-booking-table.yaml
+      author: Serhii_Gainovskyi
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: bookings
+            baseColumnNames: user_id
+            constraintName: fk_bookings_user
+            referencedTableName: users
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: bookings
+            baseColumnNames: accommodation_id
+            constraintName: fk_bookings_accommodation
+            referencedTableName: accommodations
+            referencedColumnNames: id
