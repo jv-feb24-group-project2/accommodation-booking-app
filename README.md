@@ -20,7 +20,7 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 - Spring Web: For building web-based applications with Spring MVC.
 - Swagger: For API documentation and testing.
 - Hibernate: As the ORM tool.
-- H2: For the relational database.
+- MySQL: For the relational database.
 - Liquibase: For database schema versioning and management.
 - Docker: For containerizing the application.
 - Maven: For project management and dependency management.  
@@ -53,13 +53,13 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 | DELETE   |  /api/amenities/{id} |   MANAGER/ADMIN|  Delete a current category |
 
 - ##### Payment 
-| HTTP method | Endpoint  | Role  | Description  |
-|-------------|---|-------|---|
+| HTTP method | Endpoint  | Role         | Description  |
+|-------------|---|--------------|---|
 | GET         |  /api/payments | USER/MANAGER |  Get payments history of certain customer |
-| GET         |   /api/payments/{id}|    USER/MANAGER   | Get the payment by id  |
-| GET         |  /api/payments/create-session/{bookingId} |     USER  | Init payment sessions for booking transactions  |
-| GET         | /api/payments/success/  |    USER    |  Redirection after successfully processing of payment |
-| GET         |/api/payments/cancel/   |   USER     | Redirection after unsuccessfully processing of payment  |
+| GET         |   /api/payments/{id}| USER/MANAGER | Get the payment by id  |
+| GET         |  /api/payments/create-session/{bookingId} | ---          | Init payment sessions for booking transactions  |
+| GET         | /api/payments/success/  | ---          |  Redirection after successfully processing of payment |
+| GET         |/api/payments/cancel/   | ---           | Redirection after unsuccessfully processing of payment  |
 
 - ##### Booking
 | HTTP method | Endpoint           |   Role  | Description                             |
@@ -80,7 +80,7 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 
 ### 🌟 Getting Started
 ##### Prerequisites
-- Java 17+
+- Java 21+
 - Maven 4+
 - MySQL 8+
 - Docker
@@ -121,9 +121,13 @@ The server will start on http://localhost:8080.
 ```
 docker build -t accommodation-booking-app .
 ```
-2. Run the Docker container:
+2. Build and Run the Docker Containers:
 ```
-docker run -d -p 8080:8080 --name accommodation-booking-app accommodation-booking-app
+docker-compose up
+```
+3. Stop and Remove Containers:
+```
+docker-compose down
 ```
 
 ##### 📄 Challenges and Solutions
