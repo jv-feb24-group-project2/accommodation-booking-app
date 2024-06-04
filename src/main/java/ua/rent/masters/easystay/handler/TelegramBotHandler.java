@@ -110,6 +110,6 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     }
 
     private String getSubscribeLink() {
-        return String.format("%s/api/notification/subscribe", baseUrl);
+        return String.format("%s/api/notification/subscribe", "google.com");
     }
 }
