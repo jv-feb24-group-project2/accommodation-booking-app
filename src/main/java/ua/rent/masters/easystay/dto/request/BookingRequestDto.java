@@ -13,6 +13,7 @@ public record BookingRequestDto(
         @Min(value = 1, message = "The value must be at least 1")
         Long accommodationId,
         @NotNull
+        @Min(value = 1, message = "The value must be at least 1")
         Long userId
 ) {
 }

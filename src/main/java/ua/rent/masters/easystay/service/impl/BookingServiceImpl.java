@@ -1,13 +1,16 @@
 package ua.rent.masters.easystay.service.impl;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.rent.masters.easystay.dto.request.BookingRequestDto;
 import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.response.BookingResponseDto;
-import ua.rent.masters.easystay.exeption.BookingException;
+import ua.rent.masters.easystay.exception.BookingException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
@@ -23,6 +26,7 @@ public class BookingServiceImpl implements BookingService {
     private final AccommodationService accommodationService;
 
     @Override
+    @Transactional
     public BookingResponseDto create(BookingRequestDto requestDto) {
         accommodationService.findById(requestDto.accommodationId());
         validateBookingDto(requestDto);
@@ -35,23 +39,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getByUserIdOrStatus(Long userId, BookingStatus bookingStatus) {
-        List<Booking> bookings;
+    public List<BookingResponseDto> getByUserIdOrStatus(
+            Pageable pageable,
+            Long userId,
+            BookingStatus bookingStatus) {
+        List<Booking> bookings = Collections.emptyList();
         if (userId != null && bookingStatus != null) {
-            bookings = bookingRepository.findByUserIdAndStatus(userId, bookingStatus)
-                    .orElseThrow(() -> new BookingException(
-                            "Can't find bookings with provided userId and status"));
+            bookings = bookingRepository.findByUserIdAndStatus(userId, bookingStatus);
+
         } else if (userId != null) {
-            bookings = bookingRepository.findByUserId(userId)
-                    .orElseThrow(() -> new BookingException(
-                            "Can't find bookings with provided userId"));
+            bookings = bookingRepository.findByUserId(userId);
+
         } else if (bookingStatus != null) {
-            bookings = bookingRepository.findByStatus(bookingStatus)
-                    .orElseThrow(() -> new BookingException(
-                            "Can't find bookings with provided status"));
-        } else {
-            throw new BookingException(
-                    "Please provide at least one search parameter (userId or status)");
+            bookings = bookingRepository.findByStatus(bookingStatus);
         }
 
         return bookings.stream()
@@ -60,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAll() {
+    public List<BookingResponseDto> getAll(Pageable pageable) {
         return bookingRepository.findAll().stream()
                 .map(bookingMapper::toDto)
                 .toList();
@@ -73,6 +73,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto updateById(Long bookingId,
                                                 BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
@@ -97,6 +98,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         bookingRepository.deleteById(booking.getId());
