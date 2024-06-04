@@ -10,9 +10,9 @@ For Customers: Simplifies finding accommodations as per their needs, provides Te
 
 For Administrators: Provides comprehensive tools for inventory management, order booking, and real-time updates, making it easy to manage rental properties.
 
-The Telegram Notifications Service is an integral part of our platform, providing users with instant notifications about booking confirmations, payment statuses, new property listings, and important updates directly through Telegram. This service enhances user experience by keeping them informed and engaged without the need to constantly check the app.   
+The Telegram Notifications Service is an integral part of our platform. It provides users with instant notifications about booking confirmations, payment statuses, new property listings, and important updates directly through Telegram. This service enhances user experience by keeping them informed and engaged without the need  to check the app constantly.  
 
-Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI, Accommodation Booking App offers a secure and robust backend, perfect for supporting the operations of rental properties.
+Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI, the Accommodation Booking App offers a secure and robust backend that supports rental property operations.
 ### 🛠️ Technologies and Tools Used
 - Spring Boot: For building the application framework.
 - Spring Security: To handle authentication and authorization.
@@ -27,10 +27,15 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 
 ### 🚀 Current Functionalities
 - ##### Authentication
-| HTTP method |Endpoint | Description |
-|----|----------|----------|
-| POST |/api/auth/register | Register a new user |
-| POST   | /api/auth/login |Authenticate a user  |
+
+|  HTTP method  |  Endpoint | Role  | Description  |
+|---|---|-------|---|
+|POST  | /api/auth/register | ---   |  Register a new user  |
+|POST | /api/auth/login  | All   |  Authenticate a user  |
+|  GET | /api/users/me  | All   | Get user profile information  |
+|  PUT  |/api/users/me   | All   | Update user profile information  |
+| PUT  |  /api/users/3/role | ADMIN | Update user roles |
+
 
 - ##### Accommodations
 |HTTP method   |  Endpoint | Role          | Description  |
@@ -138,7 +143,7 @@ Challenge 2: Database Management
 Solution: Utilized Spring Data JPA and Hibernate for efficient database interactions and ORM capabilities.
 
 Challenge 3: Telegram Notifications Service
-Solution: Integrated Telegram Notifications Service to providing users with instant notifications about booking confirmations, payment statuses, new property listings, and important updates directly through Telegram.
+Solution: Integrated Telegram Notifications Service to provide users instant notifications about booking confirmations, payment statuses, new property listings, and important updates directly through Telegram.
 
 Challenge 4: Stripe
 Solution: Understanding the intricacies of payment session creation proved crucial to ensuring a seamless payment process.
