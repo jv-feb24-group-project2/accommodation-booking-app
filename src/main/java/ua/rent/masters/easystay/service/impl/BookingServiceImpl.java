@@ -40,9 +40,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDto> getByUserIdOrStatus(
-            Pageable pageable,
-            Long userId,
-            BookingStatus bookingStatus) {
+            Pageable pageable, Long userId, BookingStatus bookingStatus) {
         List<Booking> bookings = Collections.emptyList();
         if (userId != null && bookingStatus != null) {
             bookings = bookingRepository.findByUserIdAndStatus(userId, bookingStatus);
@@ -60,7 +58,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAll(Long userId,Pageable pageable) {
+    public List<BookingResponseDto> getAll(
+            Long userId, Pageable pageable) {
         return bookingRepository.findByUserId(userId).stream()
                 .map(bookingMapper::toDto)
                 .toList();
@@ -74,8 +73,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto updateById(Long bookingId,
-                                                BookingRequestUpdateDto requestUpdateDto) {
+    public BookingResponseDto updateById(
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         if (booking.getStatus() != BookingStatus.PENDING) {
             throw new BookingException("You can update your booking"
@@ -110,8 +109,8 @@ public class BookingServiceImpl implements BookingService {
                         + "does not exist"));
     }
 
-    private boolean isBookingOverlapping(List<Booking> existingBookings,
-                                         BookingRequestDto requestDto) {
+    private boolean isBookingOverlapping(
+            List<Booking> existingBookings, BookingRequestDto requestDto) {
         return existingBookings.stream()
                 .anyMatch(b -> !(requestDto.checkOutDate()
                         .isBefore(b.getCheckInDate())

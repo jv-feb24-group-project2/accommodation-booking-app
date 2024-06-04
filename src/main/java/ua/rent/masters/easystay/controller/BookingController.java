@@ -34,7 +34,7 @@ public class BookingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MANAGER','ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public BookingResponseDto createNewBooking(
             @RequestBody @Valid BookingRequestDto requestDto) {
         return bookingService.create(requestDto);
@@ -42,16 +42,15 @@ public class BookingController {
 
     @GetMapping("/my")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public List<BookingResponseDto> findAllUserBooking(
-            @AuthenticationPrincipal User user,
-            Pageable pageable) {
-        return bookingService.getAll(user.getId(),pageable);
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<BookingResponseDto> findAllUserBookings(
+            @AuthenticationPrincipal User user, Pageable pageable) {
+        return bookingService.getAll(user.getId(), pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public BookingResponseDto findSpecificBookingById(
             @PathVariable("id") Long bookingId) {
         return bookingService.getById(bookingId);
@@ -59,16 +58,15 @@ public class BookingController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public BookingResponseDto updateBookingByBookingId(
             @PathVariable("id") Long bookingId,
-            @RequestBody @Valid BookingRequestUpdateDto
-                    requestUpdateDto) {
+            @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto) {
         return bookingService.updateById(bookingId, requestUpdateDto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBookingByBookingId(
             @PathVariable("id") Long bookingId) {
@@ -77,7 +75,7 @@ public class BookingController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public List<BookingResponseDto> getBookingsByUserIdOrStatus(
             @ParameterObject @PageableDefault(sort = "id", value = 5) Pageable pageable,
             @RequestParam(required = false) Long userId,
