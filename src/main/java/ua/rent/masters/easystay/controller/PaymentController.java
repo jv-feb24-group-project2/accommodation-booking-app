@@ -7,6 +7,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +33,9 @@ public class PaymentController {
                     + "bookings with their accommodations, ADMIN can get any payment")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PaymentResponseDto getPaymentById(@PathVariable Long id, User user) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public PaymentResponseDto getPaymentById(@PathVariable Long id,
+                                             @AuthenticationPrincipal User user) {
         return paymentService.getPaymentById(id, user);
     }
 
@@ -40,8 +44,9 @@ public class PaymentController {
             description = "USER can get payments for his bookings, MANAGER can get payments for "
                     + "bookings with their accommodations, ADMIN get all payment")
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentResponseDto> getAllPayments(User user) {
+    public List<PaymentResponseDto> getAllPayments(@AuthenticationPrincipal User user) {
         return paymentService.getAllPayments(user);
     }
 
@@ -73,7 +78,6 @@ public class PaymentController {
     @GetMapping("/cancel")
     public PaymentCancelResponseDto handlePaymentCancel(
             @RequestParam("session_id") String sessionId) {
-        paymentService.handlePaymentCanceling(sessionId);
-        return new PaymentCancelResponseDto("I need BookingResponseDto to add more details");
+        return paymentService.handlePaymentCanceling(sessionId);
     }
 }

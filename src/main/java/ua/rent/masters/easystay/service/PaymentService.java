@@ -1,6 +1,7 @@
 package ua.rent.masters.easystay.service;
 
 import java.util.List;
+import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.model.User;
 
@@ -9,7 +10,7 @@ public interface PaymentService {
 
     void handlePaymentSuccess(String sessionId);
 
-    void handlePaymentCanceling(String sessionId);
+    PaymentCancelResponseDto handlePaymentCanceling(String sessionId);
 
     List<PaymentResponseDto> getAllPayments(User user);
 

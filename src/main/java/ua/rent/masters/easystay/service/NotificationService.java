@@ -10,8 +10,7 @@ import ua.rent.masters.easystay.model.PaymentStatus;
 import ua.rent.masters.easystay.model.User;
 
 public interface NotificationService {
-    void notifyAboutAccommodationStatus(
-            Accommodation accommodation, User user, AccommodationStatus status);
+    void notifyAboutAccommodationStatus(Accommodation accommodation, AccommodationStatus status);
 
     void notifyAboutBookingStatus(Booking booking, User user, BookingStatus status);
 
