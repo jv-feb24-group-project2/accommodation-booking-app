@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
             bookings = bookingRepository.findByUserIdAndStatus(userId, bookingStatus);
 
         } else if (userId != null) {
-            bookings = bookingRepository.findByUserId(userId);
+            bookings = bookingRepository.findAllByUserId(userId, pageable);
 
         } else if (bookingStatus != null) {
             bookings = bookingRepository.findByStatus(bookingStatus);
@@ -60,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingResponseDto> getAll(
             Long userId, Pageable pageable) {
-        return bookingRepository.findByUserId(userId).stream()
+        return bookingRepository.findAllByUserId(userId, pageable).stream()
                 .map(bookingMapper::toDto)
                 .toList();
     }
