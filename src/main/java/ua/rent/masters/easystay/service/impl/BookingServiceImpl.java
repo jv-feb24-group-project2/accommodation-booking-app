@@ -60,8 +60,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAll(Pageable pageable) {
-        return bookingRepository.findAll().stream()
+    public List<BookingResponseDto> getAll(Long userId,Pageable pageable) {
+        return bookingRepository.findByUserId(userId).stream()
                 .map(bookingMapper::toDto)
                 .toList();
     }

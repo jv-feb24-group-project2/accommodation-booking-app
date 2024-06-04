@@ -16,7 +16,7 @@ public interface BookingService {
             Long userId,
             BookingStatus bookingStatus);
 
-    List<BookingResponseDto> getAll(Pageable pageable);
+    List<BookingResponseDto> getAll(Long userId,Pageable pageable);
 
     BookingResponseDto getById(Long bookingId);
 
