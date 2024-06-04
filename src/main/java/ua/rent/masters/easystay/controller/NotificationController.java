@@ -2,6 +2,7 @@ package ua.rent.masters.easystay.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,15 +19,13 @@ public class NotificationController {
 
     @GetMapping("/subscribe")
     @ResponseStatus(HttpStatus.OK)
-    public NotificationResponse subscribe() {
-        User user = new User();
+    public NotificationResponse subscribe(@AuthenticationPrincipal User user) {
         return notificationService.subscribe(user);
     }
 
     @GetMapping("/unsubscribe")
     @ResponseStatus(HttpStatus.OK)
-    public NotificationResponse unsubscribe() {
-        User user = new User();
+    public NotificationResponse unsubscribe(@AuthenticationPrincipal User user) {
         return notificationService.unsubscribe(user);
     }
 }

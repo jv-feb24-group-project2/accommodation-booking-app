@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.rent.masters.easystay.dto.NotificationResponse;
+import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.handler.TelegramBotHandler;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.AccommodationStatus;
@@ -13,6 +14,7 @@ import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.Payment;
 import ua.rent.masters.easystay.model.PaymentStatus;
+import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.NotificationService;
@@ -33,8 +35,9 @@ public class TelegramNotificationService implements NotificationService {
     private final UserRepository userRepository;
 
     @Override
-    public void notifyAboutAccommodationStatus(Accommodation accommodation,
-            AccommodationStatus status) {
+    public void notifyAboutAccommodationStatus(
+            Accommodation accommodation, AccommodationStatus status
+    ) {
         String message = switch (status) {
             case CREATED ->
                     "New accommodation listed: %s in %s, $%s/day."
@@ -48,7 +51,7 @@ public class TelegramNotificationService implements NotificationService {
                     "Accommodation removed: %s in %s."
                             .formatted(accommodation.getType(), accommodation.getLocation());
         };
-        botHandler.send(USER_ID_INDEX, message);
+        sendToAllManagers(message);
     }
 
     @Override
@@ -98,7 +101,11 @@ public class TelegramNotificationService implements NotificationService {
     public String subscribe(String userInfo, Long chatId) {
         Optional<User> userFromUserInfo = getUserFromUserInfo(userInfo);
         if (userFromUserInfo.isPresent()) {
-            User user = userFromUserInfo.get();
+            Long id = userFromUserInfo.get().getId();
+            String email = userFromUserInfo.get().getEmail();
+            User user = userRepository.getByIdAndEmail(id, email).orElseThrow(
+                    () -> new EntityNotFoundException(
+                            "User with email %s and ID%d not exist.".formatted(email, id)));
             user.setChatId(chatId);
             userRepository.save(user);
             return SUCCESS_MESSAGE;
@@ -136,6 +143,7 @@ public class TelegramNotificationService implements NotificationService {
     }
 
     private Optional<User> getUserFromUserInfo(String userInfo) {
+        userInfo = new String(Base64.getUrlDecoder().decode(userInfo));
         String[] splitedUserInfo = userInfo.split(SPLITTER);
         User user = null;
         if (splitedUserInfo.length == USER_INFO_SIZE) {
@@ -144,5 +152,10 @@ public class TelegramNotificationService implements NotificationService {
             user.setEmail(splitedUserInfo[EMAIL_INDEX]);
         }
         return Optional.ofNullable(user);
+    }
+
+    private void sendToAllManagers(String message) {
+        userRepository.findByRoleName(Role.RoleName.ROLE_MANAGER)
+                      .forEach(u -> botHandler.send(u.getChatId(), message));
     }
 }

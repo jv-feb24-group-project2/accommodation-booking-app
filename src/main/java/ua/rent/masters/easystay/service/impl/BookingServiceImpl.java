@@ -40,15 +40,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDto> getByUserIdOrStatus(
-            Pageable pageable,
-            Long userId,
-            BookingStatus bookingStatus) {
+            Pageable pageable, Long userId, BookingStatus bookingStatus) {
         List<Booking> bookings = Collections.emptyList();
         if (userId != null && bookingStatus != null) {
             bookings = bookingRepository.findByUserIdAndStatus(userId, bookingStatus);
 
         } else if (userId != null) {
-            bookings = bookingRepository.findByUserId(userId);
+            bookings = bookingRepository.findAllByUserId(userId, pageable);
 
         } else if (bookingStatus != null) {
             bookings = bookingRepository.findByStatus(bookingStatus);
@@ -60,8 +58,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAll(Pageable pageable) {
-        return bookingRepository.findAll().stream()
+    public List<BookingResponseDto> getAll(
+            Long userId, Pageable pageable) {
+        return bookingRepository.findAllByUserId(userId, pageable).stream()
                 .map(bookingMapper::toDto)
                 .toList();
     }
@@ -74,8 +73,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto updateById(Long bookingId,
-                                                BookingRequestUpdateDto requestUpdateDto) {
+    public BookingResponseDto updateById(
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         if (booking.getStatus() != BookingStatus.PENDING) {
             throw new BookingException("You can update your booking"
@@ -110,8 +109,8 @@ public class BookingServiceImpl implements BookingService {
                         + "does not exist"));
     }
 
-    private boolean isBookingOverlapping(List<Booking> existingBookings,
-                                         BookingRequestDto requestDto) {
+    private boolean isBookingOverlapping(
+            List<Booking> existingBookings, BookingRequestDto requestDto) {
         return existingBookings.stream()
                 .anyMatch(b -> !(requestDto.checkOutDate()
                         .isBefore(b.getCheckInDate())

@@ -12,17 +12,15 @@ public interface BookingService {
     BookingResponseDto create(BookingRequestDto requestDto);
 
     List<BookingResponseDto> getByUserIdOrStatus(
-            Pageable pageable,
-            Long userId,
-            BookingStatus bookingStatus);
+            Pageable pageable, Long userId, BookingStatus bookingStatus);
 
-    List<BookingResponseDto> getAll(Pageable pageable);
+    List<BookingResponseDto> getAll(
+            Long userId, Pageable pageable);
 
     BookingResponseDto getById(Long bookingId);
 
     BookingResponseDto updateById(
-            Long bookingId,
-            BookingRequestUpdateDto requestUpdateDto);
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto);
 
     void deleteById(Long bookingId);
 }
