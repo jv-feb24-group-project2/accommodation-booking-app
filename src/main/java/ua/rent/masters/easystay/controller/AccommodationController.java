@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,16 @@ import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.service.AccommodationService;
 
+@Tag(name = "Accommodation", description = "Endpoints for viewing and managing accommodations.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/accommodation")
 public class AccommodationController {
     private final AccommodationService accommodationService;
 
+    @Operation(
+            summary = "Get all accommodations",
+            description = "Get all accommodations. User with any role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AccommodationResponseDto> getAll(@RequestParam(defaultValue = "0") int page,
@@ -34,12 +40,19 @@ public class AccommodationController {
         return accommodationService.findAll(pageable);
     }
 
+    @Operation(
+            summary = "Get accommodations by id",
+            description = "Get accommodation. User with any role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AccommodationResponseDto getById(@PathVariable Long id) {
         return accommodationService.findById(id);
     }
 
+    @Operation(
+            summary = "Create accommodation",
+            description = "Creates new accommodation. Users with roles MANAGER or ADMIN can create "
+                + "new accommodations.")
     //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -48,7 +61,11 @@ public class AccommodationController {
         return accommodationService.save(requestDto);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Update accommodation",
+            description = "Update accommodations. MANAGERs can update their own accommodations, "
+                    + "and ADMINNs can update any accommodation.")
+    //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AccommodationResponseDto update(@PathVariable Long id,
@@ -56,6 +73,10 @@ public class AccommodationController {
         return accommodationService.update(id,requestDto);
     }
 
+    @Operation(
+            summary = "Delete accommodation",
+            description = "Delete accommodations. MANAGERs can delete their own accommodations, "
+                    + "and ADMINNs can delete any accommodation.")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
