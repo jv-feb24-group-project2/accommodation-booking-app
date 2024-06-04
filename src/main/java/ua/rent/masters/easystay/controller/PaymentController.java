@@ -28,7 +28,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @Operation(
-            summary = "Get payment by id",
+            summary = "Get Payment By Id",
             description = "USER can get payment for theirs bookings, MANAGER can get "
                     + "any payment")
     @GetMapping("/{id}")
@@ -40,7 +40,7 @@ public class PaymentController {
     }
 
     @Operation(
-            summary = "Get all payments",
+            summary = "Get All Payments",
             description = "USER can get all payments for theirs bookings, MANAGER get all "
                     + "payments of all users")
     @GetMapping
@@ -51,7 +51,7 @@ public class PaymentController {
     }
 
     @Operation(
-            summary = "Create payment session",
+            summary = "Create Payment Session",
             description = "Anyone can do payment for anyone. No roles restrictions")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     @GetMapping("/create-session/{bookingId}")

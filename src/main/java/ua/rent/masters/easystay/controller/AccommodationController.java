@@ -23,7 +23,7 @@ import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.service.AccommodationService;
 
-@Tag(name = "Accommodation", description = "Endpoints for viewing and managing accommodations.")
+@Tag(name = "Accommodations", description = "Endpoints for viewing and managing accommodations.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/accommodation")
@@ -31,7 +31,7 @@ public class AccommodationController {
     private final AccommodationService accommodationService;
 
     @Operation(
-            summary = "Get all accommodations",
+            summary = "Get All Accommodations",
             description = "Get all accommodations. User with any Role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -42,7 +42,7 @@ public class AccommodationController {
     }
 
     @Operation(
-            summary = "Get accommodations by id",
+            summary = "Get Accommodations By Id",
             description = "Get accommodation. User with any Role can use this endpoint.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
@@ -51,7 +51,7 @@ public class AccommodationController {
     }
 
     @Operation(
-            summary = "Create accommodation",
+            summary = "Create Accommodation",
             description = "Creates new accommodation. MANAGER can create new accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -62,7 +62,7 @@ public class AccommodationController {
     }
 
     @Operation(
-            summary = "Update accommodation",
+            summary = "Update Accommodation",
             description = "Update accommodations. MANAGER can update accommodations")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -73,7 +73,7 @@ public class AccommodationController {
     }
 
     @Operation(
-            summary = "Delete accommodation",
+            summary = "Delete Accommodation",
             description = "Delete accommodations. MANAGER can delete accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)

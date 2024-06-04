@@ -31,7 +31,7 @@ public class AmenityController {
     private final AmenityService amenityService;
 
     @Operation(
-            summary = "Get all amenities",
+            summary = "Get All Amenities",
             description = "Get all amenities. MANAGER can use this endpoint.")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
@@ -44,7 +44,7 @@ public class AmenityController {
     }
 
     @Operation(
-            summary = "Get amenity by id",
+            summary = "Get Amenity By Id",
             description = "Get amenity by id. MANAGER can use this endpoint.")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
@@ -54,7 +54,7 @@ public class AmenityController {
     }
 
     @Operation(
-            summary = "Create amenity",
+            summary = "Create Amenity",
             description = "Create amenity. MANAGER can new amenities.")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -65,7 +65,7 @@ public class AmenityController {
     }
 
     @Operation(
-            summary = "Update amenities",
+            summary = "Update Amenities",
             description = "Update amenities. MANAGER can update amenities")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)

@@ -22,6 +22,7 @@ import ua.rent.masters.easystay.security.JwtAuthenticationFilter;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -38,7 +39,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(
-                                        "/payments/**",
+                                        "/payments/create-session/**",
+                                        "/payments/cancel**",
+                                        "/payments/success**",
                                         "/auth/**",
                                         "/error",
                                         "/swagger-ui/**",
