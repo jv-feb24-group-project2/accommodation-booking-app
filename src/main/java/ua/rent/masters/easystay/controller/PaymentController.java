@@ -58,7 +58,6 @@ public class PaymentController {
     @GetMapping("/cancel")
     public PaymentCancelResponseDto handlePaymentCancel(
             @RequestParam("session_id") String sessionId) {
-        paymentService.handlePaymentCanceling(sessionId);
-        return new PaymentCancelResponseDto("I need BookingResponseDto to add more details");
+        return paymentService.handlePaymentCanceling(sessionId);
     }
 }

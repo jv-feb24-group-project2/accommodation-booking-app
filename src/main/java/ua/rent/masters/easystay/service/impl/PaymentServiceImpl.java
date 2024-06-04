@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
 import ua.rent.masters.easystay.dto.PaymentResponseDto;
 import ua.rent.masters.easystay.exception.EntityNotFoundException;
+import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.mapper.PaymentMapper;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Booking;
@@ -41,6 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final AccommodationRepository accommodationRepository;
     private final StripePaymentService stripePaymentService;
     private final PaymentMapper paymentMapper;
+    private final BookingMapper bookingMapper;
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
@@ -67,10 +70,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void handlePaymentCanceling(String sessionId) {
+    public PaymentCancelResponseDto handlePaymentCanceling(String sessionId) {
         Payment payment = findPaymentBySessionId(sessionId);
         payment.setStatus(PaymentStatus.EXPIRED);
         paymentRepository.save(payment);
+        return new PaymentCancelResponseDto("You have to pay for booking with id: "
+                                            + payment.getBooking().getId());
     }
 
     @Override
