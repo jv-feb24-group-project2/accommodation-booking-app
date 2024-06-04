@@ -43,9 +43,9 @@ public class UserServiceImpl implements UserService {
             UserUpdateProfileDto userUpdateProfileDto) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-        user.setFirstName(userUpdateProfileDto.getFirstName());
-        user.setLastName(userUpdateProfileDto.getLastName());
-        user.setPassword(passwordEncoder.encode(userUpdateProfileDto.getPassword()));
+        user.setFirstName(userUpdateProfileDto.password());
+        user.setLastName(userUpdateProfileDto.password());
+        user.setPassword(passwordEncoder.encode(userUpdateProfileDto.password()));
         User savedUser = userRepository.save(user);
         return userMapper.toDtoWithRoles(savedUser);
     }

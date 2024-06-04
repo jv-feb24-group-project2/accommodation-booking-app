@@ -18,7 +18,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserLoginResponseDto authenticate(UserLoginRequestDto userLoginRequestDto) {
         final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLoginRequestDto.email(),
+                new UsernamePasswordAuthenticationToken(
+                        userLoginRequestDto.email(),
                         userLoginRequestDto.password())
         );
         String token = jwtUtil.generateToken(authentication.getName());

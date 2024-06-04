@@ -1,7 +1,7 @@
 package ua.rent.masters.easystay.mapper;
 
 import org.mapstruct.Mapper;
-import ua.rent.masters.easystay.configuration.MapperConfig;
+import ua.rent.masters.easystay.config.MapperConfig;
 import ua.rent.masters.easystay.dto.amenity.AmenityRequestDto;
 import ua.rent.masters.easystay.dto.amenity.AmenityResponseDto;
 import ua.rent.masters.easystay.model.Amenity;

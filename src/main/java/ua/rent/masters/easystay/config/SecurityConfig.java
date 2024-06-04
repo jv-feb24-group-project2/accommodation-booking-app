@@ -1,4 +1,4 @@
-package ua.rent.masters.easystay.configuration;
+package ua.rent.masters.easystay.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
