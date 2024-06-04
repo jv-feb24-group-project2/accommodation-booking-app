@@ -76,24 +76,18 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto updateById(
             Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
+
         if (booking.getStatus() != BookingStatus.PENDING) {
-            throw new BookingException("You can update your booking"
-                    + " only with status PENDING");
+            throw new BookingException(
+                    "You can update your booking only with status PENDING");
         }
 
-        if (requestUpdateDto.checkInDate() != null) {
-            booking.setCheckInDate(requestUpdateDto.checkInDate());
-        }
-        if (requestUpdateDto.checkOutDate() != null) {
-            booking.setCheckOutDate(requestUpdateDto.checkOutDate());
-        }
-        if (requestUpdateDto.accommodationId() != null) {
-            booking.setAccommodationId(requestUpdateDto.accommodationId());
-        }
+        validateUpdateDates(requestUpdateDto);
 
-        bookingRepository.save(booking);
+        updateBookingWithDto(booking, requestUpdateDto);
 
-        return bookingMapper.toUpdatedDto(booking);
+        Booking updatedBooking = bookingRepository.save(booking);
+        return bookingMapper.toDto(updatedBooking);
     }
 
     @Override
@@ -132,6 +126,36 @@ public class BookingServiceImpl implements BookingService {
         }
         if (requestDto.checkOutDate().isBefore(requestDto.checkInDate())) {
             throw new BookingException("Checkout date can`t be earlier that checkin date");
+        }
+    }
+
+    private void updateBookingWithDto(Booking booking,
+                                      BookingRequestUpdateDto requestUpdateDto) {
+        if (requestUpdateDto.checkInDate() != null) {
+            booking.setCheckInDate(requestUpdateDto.checkInDate());
+        }
+        if (requestUpdateDto.checkOutDate() != null) {
+            booking.setCheckOutDate(requestUpdateDto.checkOutDate());
+        }
+        if (requestUpdateDto.accommodationId() != null) {
+            booking.setAccommodationId(requestUpdateDto.accommodationId());
+        }
+    }
+
+    private void validateUpdateDates(BookingRequestUpdateDto requestUpdateDto) {
+        LocalDate checkInDate = requestUpdateDto.checkInDate();
+        LocalDate checkOutDate = requestUpdateDto.checkOutDate();
+        LocalDate now = LocalDate.now();
+
+        if (checkInDate != null && checkInDate.isBefore(now)) {
+            throw new BookingException(
+                    "You can't update the check-in date to a past date");
+        }
+
+        if (checkOutDate != null && checkInDate != null
+                && checkOutDate.isBefore(checkInDate)) {
+            throw new BookingException(
+                    "Check-out date can't be earlier than check-in date");
         }
     }
 }
