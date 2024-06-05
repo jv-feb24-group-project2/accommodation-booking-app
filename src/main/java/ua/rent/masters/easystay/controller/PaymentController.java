@@ -1,6 +1,5 @@
 package ua.rent.masters.easystay.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,8 +40,8 @@ public class PaymentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/create-session/{bookingId}")
-    public PaymentResponseSessionUrlDto createPaymentSession(@PathVariable Long bookingId,
-                                     HttpServletResponse response) throws Exception {
+    public PaymentResponseSessionUrlDto createPaymentSession(@PathVariable Long bookingId)
+            throws Exception {
         return new PaymentResponseSessionUrlDto(paymentService.createPaymentSession(bookingId));
     }
 

@@ -42,7 +42,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(
-                                        "/payments/**",
+                                        "/payments/create-session/*",
+                                        "/payments/success*",
+                                        "/payments/cancel*",
                                         "/auth/**",
                                         "/error",
                                         "/swagger-ui/**",
