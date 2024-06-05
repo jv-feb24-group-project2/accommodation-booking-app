@@ -15,6 +15,7 @@ import ua.rent.masters.easystay.exception.BookingException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
+import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.UserRepository;
@@ -89,8 +90,16 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("User does not exist"));
         Booking booking = getBookingByIdOrThrowException(bookingId);
+
+        boolean isManager = checkUserRole(user);
+
+        if (!isManager && !booking.getUserId().equals(user.getId())) {
+            throw new BookingException("You can update only your own bookings");
+        }
 
         if (booking.getStatus() != BookingStatus.PENDING) {
             throw new BookingException(
@@ -115,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
     private Booking getBookingByIdOrThrowException(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingException("Booking with id " + bookingId
-                        + "does not exist"));
+                        + " does not exist"));
     }
 
     private boolean isBookingOverlapping(
@@ -172,5 +181,10 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingException(
                     "Check-out date can't be earlier than check-in date");
         }
+    }
+
+    private boolean checkUserRole(User user) {
+        return user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(Role.RoleName.ROLE_MANAGER));
     }
 }
