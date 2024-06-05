@@ -25,7 +25,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: session_url
-                  type: VARCHAR(255)
+                  type: VARCHAR(500)
               - column:
                   name: session_id
                   type: VARCHAR(255)
