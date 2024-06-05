@@ -23,7 +23,7 @@ import ua.rent.masters.easystay.service.AmenityService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/amenities")
+@RequestMapping(value = "/amenity")
 public class AmenityController {
     private final AmenityService amenityService;
 

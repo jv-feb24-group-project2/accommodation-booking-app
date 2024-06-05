@@ -23,7 +23,7 @@ import ua.rent.masters.easystay.service.AccommodationService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/accommodations")
+@RequestMapping(value = "/accommodation")
 public class AccommodationController {
     private final AccommodationService accommodationService;
 
