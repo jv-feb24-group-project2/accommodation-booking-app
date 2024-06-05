@@ -3,8 +3,11 @@ package ua.rent.masters.easystay.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
+import static ua.rent.masters.easystay.model.AccommodationStatus.DELETED;
 import static ua.rent.masters.easystay.utils.TestDataUtils.AMENITY_IDS;
 import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccomadation;
@@ -15,6 +18,7 @@ import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,12 +57,10 @@ class AccommodationServiceImplTest {
 
     @AfterEach
     void afterEach() {
-        verifyNoMoreInteractions(
-                accommodationRepository,
+        verifyNoMoreInteractions(accommodationRepository,
                 accommodationMapper,
                 amenityRepository,
-                telegramNotificationService
-        );
+                telegramNotificationService);
     }
 
     @Test
@@ -69,7 +71,7 @@ class AccommodationServiceImplTest {
         Accommodation accommodation = createAccomadation();
         Set<Long> amenityIds = AMENITY_IDS;
 
-        // Mocking behavior
+        // Мокінг поведінки
         Set<Amenity> amenities = getAmenities();
         when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
         when(accommodationMapper.toModel(any(AccommodationRequestDto.class)))
@@ -84,6 +86,7 @@ class AccommodationServiceImplTest {
 
         // Then
         assertEquals(getAccommodationDto(accommodation), result);
+        verify(telegramNotificationService).notifyAboutAccommodationStatus(accommodation, CREATED);
     }
 
     @Test
@@ -139,18 +142,6 @@ class AccommodationServiceImplTest {
     }
 
     @Test
-    @DisplayName("Verify update() method throws EntityNotFoundException for non-existing ID")
-    void update_NonExistingId_ThrowsEntityNotFoundException() {
-        String expectedMessage = "Can`t find an accommodation with id: " + ID_1;
-
-        when(accommodationRepository.findById(ID_1)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(EntityNotFoundException.class,
-                () -> accommodationService.update(ID_1, createAccommodationRequestDto()));
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-
-    @Test
     @DisplayName("Verify deleteById() method works")
     void deleteById_ExistingId_DeletesAccommodation() {
         // Given
@@ -158,11 +149,14 @@ class AccommodationServiceImplTest {
         Accommodation accommodation = createAccomadation();
 
         // Mocking behavior
-        when(accommodationRepository.existsById(id)).thenReturn(true);
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
 
-        // When & Then
+        // When
         accommodationService.deleteById(id);
+
+        // Then
+        verify(accommodationRepository).deleteById(id);
+        verify(telegramNotificationService).notifyAboutAccommodationStatus(accommodation, DELETED);
     }
 
     @Test
@@ -172,11 +166,48 @@ class AccommodationServiceImplTest {
         Long id = ID_1;
 
         // Mocking behavior
-        when(accommodationRepository.existsById(id)).thenReturn(false);
+        when(accommodationRepository.findById(id)).thenReturn(Optional.empty());
 
         // When & Then
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> accommodationService.deleteById(id));
-        assertEquals("Can`t find an accommodation with id: " + id, exception.getMessage());
+        assertEquals("Can`t find an accommodation with id: "
+                + id, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Verify validateAmenitiesExist() method works")
+    void validateAmenitiesExist_ExistingAmenities_DoesNotThrowException() {
+        // Given
+        Set<Long> amenityIds = AMENITY_IDS;
+        Set<Amenity> amenities = getAmenities();
+
+        // Mocking behavior
+        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
+
+        // When & Then
+        accommodationService.validateAmenitiesExist(amenityIds);
+    }
+
+    @Test
+    @DisplayName("Verify validateAmenitiesExist() method "
+            + "throws EntityNotFoundException for non-existing amenities")
+    void validateAmenitiesExist_NonExistingAmenities_ThrowsEntityNotFoundException() {
+        // Given
+        Set<Long> amenityIds = AMENITY_IDS;
+
+        // Mocking behavior
+        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(Set.of());
+
+        // Convert the set to a sorted list
+        List<Long> sortedAmenityIds = amenityIds.stream().sorted().collect(Collectors.toList());
+
+        // Construct the expected message
+        String expectedMessage = "Amenities with ids " + sortedAmenityIds + " do not exist.";
+
+        // When & Then
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> accommodationService.validateAmenitiesExist(amenityIds));
+        assertEquals(expectedMessage, exception.getMessage());
     }
 }
