@@ -22,12 +22,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String ERRORS = "errors";
     private static final String SPACE = " ";
@@ -55,13 +55,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return getResponseEntity(HttpStatus.valueOf(status.value()), ex.getLocalizedMessage());
     }
 
-    @ExceptionHandler(TelegramException.class)
-    protected ResponseEntity<Object> handleNotFound(TelegramException ex) {
-        return getResponseEntity(INTERNAL_SERVER_ERROR, ex.getMessage());
-    }
-
-    @ExceptionHandler(BookingException.class)
-    protected ResponseEntity<Object> handleNotFound(BookingException ex) {
+    @ExceptionHandler({BookingException.class, IllegalStateException.class})
+    protected ResponseEntity<Object> handleNotFound(Exception ex) {
         return getResponseEntity(BAD_REQUEST, ex.getMessage());
     }
 
@@ -81,8 +76,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<Object> handleNotIncludedExceptions(
-            Exception ex) {
+    protected ResponseEntity<Object> handleNotIncludedExceptions(Exception ex) {
         return getResponseEntity(INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
     }
 

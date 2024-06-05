@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
-import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.dto.payment.PaymentCancelResponseDto;
+import ua.rent.masters.easystay.dto.payment.PaymentResponseDto;
 import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.mapper.PaymentMapper;
 import ua.rent.masters.easystay.model.Accommodation;
@@ -19,6 +19,7 @@ import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.Payment;
 import ua.rent.masters.easystay.model.PaymentStatus;
+import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.BookingRepository;
@@ -80,11 +81,6 @@ public class PaymentServiceImpl implements PaymentService {
                 user, BookingStatus.CONFIRMED);
     }
 
-    private User getUser(Booking booking) {
-        return userRepository.findById(booking.getUserId()).orElseThrow(
-            () -> new EntityNotFoundException("Can't find user with id: " + booking.getUserId()));
-    }
-
     @Override
     public PaymentCancelResponseDto handlePaymentCanceling(String sessionId) {
         Payment payment = findPaymentBySessionId(sessionId);
@@ -96,6 +92,20 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentResponseDto> getAllPayments(User user) {
+        return user.getRoles().stream()
+                .map(Role::getName)
+                .anyMatch(Role.RoleName.ROLE_MANAGER.name()::equals)
+                ? getAllUsersPayments() : getAllPaymentsByUser(user);
+    }
+
+    private List<PaymentResponseDto> getAllUsersPayments() {
+        List<Payment> allPayments = paymentRepository.findAll();
+        return allPayments.stream()
+                .map(paymentMapper::toDto)
+                .toList();
+    }
+
+    private List<PaymentResponseDto> getAllPaymentsByUser(User user) {
         List<Payment> allByBookingUserId = paymentRepository.findAllByBookingUserId(user.getId());
         return allByBookingUserId.stream()
                 .map(paymentMapper::toDto)
@@ -120,6 +130,11 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findWithBookingBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Cant find payment with session id: "
                         + sessionId));
+    }
+
+    private User getUser(Booking booking) {
+        return userRepository.findById(booking.getUserId()).orElseThrow(
+            () -> new EntityNotFoundException("Can't find user with id: " + booking.getUserId()));
     }
 
     private BigDecimal calculateAmount(Booking booking, Accommodation accommodation) {

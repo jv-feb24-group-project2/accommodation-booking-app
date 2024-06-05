@@ -15,7 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import ua.rent.masters.easystay.exception.ExceptionHandlerFilter;
 import ua.rent.masters.easystay.security.JwtAuthenticationFilter;
 
 @EnableMethodSecurity
@@ -25,6 +27,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final ExceptionHandlerFilter handlerFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -49,6 +52,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
+                .addFilterBefore(handlerFilter, LogoutFilter.class)
                 .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

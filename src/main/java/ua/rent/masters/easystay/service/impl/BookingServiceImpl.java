@@ -1,5 +1,6 @@
 package ua.rent.masters.easystay.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -7,20 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.rent.masters.easystay.dto.request.BookingRequestDto;
-import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
-import ua.rent.masters.easystay.dto.response.BookingResponseDto;
+import ua.rent.masters.easystay.dto.booking.BookingRequestDto;
+import ua.rent.masters.easystay.dto.booking.BookingRequestUpdateDto;
+import ua.rent.masters.easystay.dto.booking.BookingResponseDto;
 import ua.rent.masters.easystay.exception.BookingException;
-import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
-import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.AccommodationService;
 import ua.rent.masters.easystay.service.BookingService;
+import ua.rent.masters.easystay.service.NotificationService;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
     private final AccommodationService accommodationService;
+    private final NotificationService telegtramNotificationService;
     private final UserRepository userRepository;
 
     @Override
@@ -40,6 +41,15 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.PENDING);
 
         Booking savedBooking = bookingRepository.save(booking);
+        User user = userRepository.findById(booking.getUserId()).orElseThrow(
+                () -> new EntityNotFoundException("Can't get user with id: " + booking.getUserId())
+        );
+
+        telegtramNotificationService.notifyAboutBookingStatus(
+                booking,
+                user,
+                BookingStatus.PENDING);
+
         return bookingMapper.toDto(savedBooking);
     }
 
@@ -79,16 +89,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("User does not exist"));
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
-
-        boolean isManager = checkUserRole(user);
-
-        if (!isManager && !booking.getUserId().equals(user.getId())) {
-            throw new BookingException("You can update only your own bookings");
-        }
 
         if (booking.getStatus() != BookingStatus.PENDING) {
             throw new BookingException(
@@ -96,6 +98,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         validateUpdateDates(requestUpdateDto);
+
         updateBookingWithDto(booking, requestUpdateDto);
 
         Booking updatedBooking = bookingRepository.save(booking);
@@ -112,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
     private Booking getBookingByIdOrThrowException(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingException("Booking with id " + bookingId
-                        + " does not exist"));
+                        + "does not exist"));
     }
 
     private boolean isBookingOverlapping(
@@ -169,10 +172,5 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingException(
                     "Check-out date can't be earlier than check-in date");
         }
-    }
-
-    private boolean checkUserRole(User user) {
-        return user.getRoles().stream()
-                .anyMatch(role -> role.getName().equals(Role.RoleName.ROLE_MANAGER));
     }
 }
