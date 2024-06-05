@@ -1,4 +1,4 @@
-package ua.rent.masters.easystay.dto;
+package ua.rent.masters.easystay.dto.payment;
 
 import java.math.BigDecimal;
 
