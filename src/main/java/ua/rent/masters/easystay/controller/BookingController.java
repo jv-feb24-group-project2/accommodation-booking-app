@@ -58,11 +58,12 @@ public class BookingController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_USER')")
     public BookingResponseDto updateBookingByBookingId(
             @PathVariable("id") Long bookingId,
-            @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto) {
-        return bookingService.updateById(bookingId, requestUpdateDto);
+            @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto,
+            @AuthenticationPrincipal User user) {
+        return bookingService.updateById(bookingId, requestUpdateDto, user.getId());
     }
 
     @DeleteMapping("/{id}")

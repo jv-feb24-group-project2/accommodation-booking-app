@@ -20,7 +20,7 @@ public interface BookingService {
     BookingResponseDto getById(Long bookingId);
 
     BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto);
+            Long bookingId, BookingRequestUpdateDto requestUpdateDto,Long userId);
 
     void deleteById(Long bookingId);
 }
