@@ -55,13 +55,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return getResponseEntity(HttpStatus.valueOf(status.value()), ex.getLocalizedMessage());
     }
 
-    @ExceptionHandler(TelegramException.class)
-    protected ResponseEntity<Object> handleNotFound(TelegramException ex) {
-        return getResponseEntity(INTERNAL_SERVER_ERROR, ex.getMessage());
-    }
-
-    @ExceptionHandler(BookingException.class)
-    protected ResponseEntity<Object> handleNotFound(BookingException ex) {
+    @ExceptionHandler({BookingException.class, IllegalStateException.class})
+    protected ResponseEntity<Object> handleNotFound(Exception ex) {
         return getResponseEntity(BAD_REQUEST, ex.getMessage());
     }
 
