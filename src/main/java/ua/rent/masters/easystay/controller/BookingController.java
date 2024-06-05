@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.rent.masters.easystay.dto.request.BookingRequestDto;
-import ua.rent.masters.easystay.dto.request.BookingRequestUpdateDto;
-import ua.rent.masters.easystay.dto.response.BookingResponseDto;
+import ua.rent.masters.easystay.dto.booking.BookingRequestDto;
+import ua.rent.masters.easystay.dto.booking.BookingRequestUpdateDto;
+import ua.rent.masters.easystay.dto.booking.BookingResponseDto;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.BookingService;
@@ -97,7 +97,7 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public List<BookingResponseDto> getBookingsByUserIdOrStatus(
+    public List<BookingResponseDto> findBookingsByUserIdOrStatus(
             @ParameterObject @PageableDefault(sort = "id", value = 5) Pageable pageable,
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) BookingStatus status) {

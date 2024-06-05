@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.rent.masters.easystay.dto.PaymentCancelResponseDto;
-import ua.rent.masters.easystay.dto.PaymentResponseDto;
+import ua.rent.masters.easystay.dto.payment.PaymentCancelResponseDto;
+import ua.rent.masters.easystay.dto.payment.PaymentResponseDto;
+import ua.rent.masters.easystay.dto.payment.PaymentResponseSessionUrlDto;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.PaymentService;
 
@@ -53,12 +53,12 @@ public class PaymentController {
     @Operation(
             summary = "Create Payment Session",
             description = "Anyone can do payment for anyone. No roles restrictions")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/create-session/{bookingId}")
-    public void createPaymentSession(@PathVariable Long bookingId,
-                                     HttpServletResponse response) throws Exception {
-        String sessionUrl = paymentService.createPaymentSession(bookingId);
-        response.setHeader(HttpHeaders.LOCATION, sessionUrl);
+    public PaymentResponseSessionUrlDto createPaymentSession(@PathVariable Long bookingId)
+            throws Exception {
+        return new PaymentResponseSessionUrlDto(paymentService.createPaymentSession(bookingId));
     }
 
     @Operation(

@@ -1,7 +1,5 @@
 package ua.rent.masters.easystay.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +12,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import ua.rent.masters.easystay.exception.ExceptionHandlerFilter;
 import ua.rent.masters.easystay.security.JwtAuthenticationFilter;
 
 @EnableMethodSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final ExceptionHandlerFilter handlerFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -39,9 +42,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(
-                                        "/payments/create-session/**",
-                                        "/payments/cancel**",
-                                        "/payments/success**",
+                                        "/payments/create-session/*",
+                                        "/payments/success*",
+                                        "/payments/cancel*",
                                         "/auth/**",
                                         "/error",
                                         "/swagger-ui/**",
@@ -51,13 +54,20 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .httpBasic(withDefaults())
+                .addFilterBefore(handlerFilter, LogoutFilter.class)
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> handlerExceptionResolver.resolveException(
+                request, response, null, authException);
     }
 
     @Bean
