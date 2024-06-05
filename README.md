@@ -147,3 +147,9 @@ Solution: Integrated Telegram Notifications Service to provide users instant not
 
 Challenge 4: Stripe
 Solution: Understanding the intricacies of payment session creation proved crucial to ensuring a seamless payment process.
+
+### 👥 Contributors:
+- **[Artem Akymenko](https://www.linkedin.com/in/artem-akymenko-4b143030a/)** LinkedIn, **[k0sm0naft](https://github.com/k0sm0naft)** GitHub
+- **[Taras Fedak](https://www.linkedin.com/in/taras-fedak-a4535b147/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)** LinkedIn, **[fedaktaras](https://github.com/fedaktaras)** GitHub
+- **[Serhii Gainovskyi](https://www.linkedin.com/in/serj-gainovskyi-58b631215/)** LinkedIn, **[JohnGrey17](https://github.com/JohnGrey17)** GitHub
+- **[Hanna Ratushniak](https://www.linkedin.com/in/hanna-ratushnyak/)** LinkedIn, **[AnyaRatusnyak](https://github.com/AnyaRatusnyak)** GitHub
