@@ -14,7 +14,6 @@ import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.RoleRepository;
 import ua.rent.masters.easystay.repository.UserRepository;
-import ua.rent.masters.easystay.service.RoleService;
 import ua.rent.masters.easystay.service.UserService;
 
 @Service
@@ -23,7 +22,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final RoleService roleService;
     private final RoleRepository roleRepository;
 
     @Override
