@@ -58,7 +58,7 @@ public class BookingController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public BookingResponseDto updateBookingByBookingId(
             @PathVariable("id") Long bookingId,
             @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto,
