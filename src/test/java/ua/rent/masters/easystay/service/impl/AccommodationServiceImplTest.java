@@ -3,7 +3,7 @@ package ua.rent.masters.easystay.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
@@ -36,6 +36,7 @@ import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Amenity;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.AmenityRepository;
+import ua.rent.masters.easystay.service.NotificationService;
 
 @ExtendWith(MockitoExtension.class)
 class AccommodationServiceImplTest {
@@ -53,14 +54,14 @@ class AccommodationServiceImplTest {
     private AccommodationRepository accommodationRepository;
 
     @Mock
-    private TelegramNotificationService telegramNotificationService;
+    private NotificationService notificationService;
 
     @AfterEach
     void afterEach() {
         verifyNoMoreInteractions(accommodationRepository,
                 accommodationMapper,
                 amenityRepository,
-                telegramNotificationService);
+                notificationService);
     }
 
     @Test
@@ -80,13 +81,13 @@ class AccommodationServiceImplTest {
                 .thenReturn(getAccommodationDto(accommodation));
         when(accommodationRepository.save(any(Accommodation.class)))
                 .thenReturn(accommodation);
+        doNothing().when(notificationService).notifyAboutAccommodationStatus(accommodation,CREATED);
 
         // When
         AccommodationResponseDto result = accommodationService.save(requestDto);
 
         // Then
         assertEquals(getAccommodationDto(accommodation), result);
-        verify(telegramNotificationService).notifyAboutAccommodationStatus(accommodation, CREATED);
     }
 
     @Test
@@ -150,13 +151,11 @@ class AccommodationServiceImplTest {
 
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
+        doNothing().when(accommodationRepository).deleteById(id);
+        doNothing().when(notificationService).notifyAboutAccommodationStatus(accommodation,DELETED);
 
-        // When
+        // When & Then
         accommodationService.deleteById(id);
-
-        // Then
-        verify(accommodationRepository).deleteById(id);
-        verify(telegramNotificationService).notifyAboutAccommodationStatus(accommodation, DELETED);
     }
 
     @Test
