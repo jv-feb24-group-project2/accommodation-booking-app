@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.handler;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import ua.rent.masters.easystay.service.NotificationService;
 public class TelegramBotHandler extends TelegramLongPollingBot {
     private final UpdateHandlerContext updateHandlerContext;
     private final String botUsername;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public TelegramBotHandler(
             @Lazy NotificationService notificationService,
@@ -50,10 +53,16 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     private void sendMessage(long chatId, String text, SendMessage message) {
         message.setChatId(chatId);
         message.setText(text);
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            throw new TelegramException("Can't send message to chatId: " + chatId, e);
-        }
+        executeInDeamon(chatId, message);
+    }
+
+    private void executeInDeamon(long chatId, SendMessage message) {
+        executorService.execute(() -> {
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                throw new TelegramException("Can't send message to chatId: " + chatId, e);
+            }
+        });
     }
 }
