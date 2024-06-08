@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.rent.masters.easystay.dto.NotificationResponse;
-import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.handler.TelegramBotHandler;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.AccommodationStatus;
@@ -14,10 +13,9 @@ import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.Payment;
 import ua.rent.masters.easystay.model.PaymentStatus;
-import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
-import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.NotificationService;
+import ua.rent.masters.easystay.service.UserService;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class TelegramNotificationService implements NotificationService {
     private static final int EMAIL_INDEX = 1;
     private static final String NOT_SUBSCRIBED = "You are not subscribed!";
     private final TelegramBotHandler botHandler;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public void notifyAboutAccommodationStatus(
@@ -91,16 +89,15 @@ public class TelegramNotificationService implements NotificationService {
     }
 
     @Override
+    @Transactional
     public String subscribe(String userInfo, Long chatId) {
         Optional<User> userFromUserInfo = getUserFromUserInfo(userInfo);
         if (userFromUserInfo.isPresent()) {
             Long id = userFromUserInfo.get().getId();
             String email = userFromUserInfo.get().getEmail();
-            User user = userRepository.getByIdAndEmail(id, email).orElseThrow(
-                    () -> new EntityNotFoundException(
-                            "User with email %s and ID%d not exist.".formatted(email, id)));
+            User user = userService.getByIdAndEmail(id, email);
             user.setChatId(chatId);
-            userRepository.save(user);
+            userService.save(user);
             return SUCCESS_MESSAGE;
         }
         return "Failed to subscribe, try one more time.";
@@ -125,13 +122,13 @@ public class TelegramNotificationService implements NotificationService {
     @Override
     @Transactional
     public String unsubscribe(Long chatId) {
-        return userRepository.getByChatId(chatId).map(this::unsubscribeUser)
+        return userService.findByChatId(chatId).map(this::unsubscribeUser)
                              .orElse(NOT_SUBSCRIBED);
     }
 
     private String unsubscribeUser(User user) {
         user.setChatId(null);
-        userRepository.save(user);
+        userService.save(user);
         return UNSUBSCRIBED;
     }
 
@@ -147,9 +144,8 @@ public class TelegramNotificationService implements NotificationService {
         return Optional.ofNullable(user);
     }
 
-    private void sendToAllManagers(String message) {
-        userRepository.findByRoleName(Role.RoleName.ROLE_MANAGER).stream()
-                      .filter(user -> user.getChatId() != null)
-                      .forEach(user -> botHandler.send(user.getChatId(), message));
+    public void sendToAllManagers(String message) {
+        userService.getSubscribedManagers()
+                   .forEach(user -> botHandler.send(user.getChatId(), message));
     }
 }

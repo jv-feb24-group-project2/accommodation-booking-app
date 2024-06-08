@@ -78,6 +78,11 @@ public class AccommodationServiceImpl implements AccommodationService {
         telegramNotificationService.notifyAboutAccommodationStatus(accommodation, DELETED);
     }
 
+    @Override
+    public List<Accommodation> findAllByIds(List<Long> accommodationIds) {
+        return accommodationRepository.findAllById(accommodationIds);
+    }
+
     public void validateAmenitiesExist(Set<Long> amenityIds) {
         Set<Amenity> amenitiesDB = amenityRepository.findByIdIn(amenityIds);
         Set<Long> existingAmenityIds = amenitiesDB.stream()

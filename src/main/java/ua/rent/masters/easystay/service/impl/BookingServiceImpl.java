@@ -112,6 +112,24 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.deleteById(booking.getId());
     }
 
+    @Override
+    @Transactional
+    public List<Booking> getExpiredBookings() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        List<Booking> expiredBookings =
+                bookingRepository.findAllByCheckOutDateBetweenAndStatusNot(
+                        LocalDate.now(), tomorrow, BookingStatus.CANCELED
+                );
+        expiredBookings.forEach(booking -> changeStatusOn(booking, BookingStatus.EXPIRED));
+        return expiredBookings;
+    }
+
+    @Override
+    public void changeStatusOn(Booking booking, BookingStatus bookingStatus) {
+        booking.setStatus(bookingStatus);
+        bookingRepository.save(booking);
+    }
+
     private Booking getBookingByIdOrThrowException(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingException("Booking with id " + bookingId

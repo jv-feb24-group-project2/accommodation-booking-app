@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.service;
 
+import java.util.List;
+import java.util.Optional;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateProfileDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateRolesDto;
@@ -16,4 +18,12 @@ public interface UserService {
             User user,
             UserUpdateProfileDto userUpdateProfileDto
     );
+
+    List<User> getSubscribedManagers();
+
+    User save(User user);
+
+    Optional<User> findByChatId(Long chatId);
+
+    User getByIdAndEmail(Long id, String email);
 }
