@@ -10,7 +10,7 @@ import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
 import static ua.rent.masters.easystay.model.AccommodationStatus.DELETED;
 import static ua.rent.masters.easystay.utils.TestDataUtils.AMENITY_IDS;
 import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
-import static ua.rent.masters.easystay.utils.TestDataUtils.createAccomadation;
+import static ua.rent.masters.easystay.utils.TestDataUtils.createAccommodation;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccommodationRequestDto;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAccommodationDto;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
@@ -18,7 +18,6 @@ import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,12 +68,11 @@ class AccommodationServiceImplTest {
     void save_ValidAccommodationRequestDto_ReturnsAccommodationResponseDto() {
         // Given
         AccommodationRequestDto requestDto = createAccommodationRequestDto();
-        Accommodation accommodation = createAccomadation();
-        Set<Long> amenityIds = AMENITY_IDS;
+        Accommodation accommodation = createAccommodation();
 
-        // Мокінг поведінки
+        // Mocking behavior
         Set<Amenity> amenities = getAmenities();
-        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
+        when(amenityRepository.findByIdIn(AMENITY_IDS)).thenReturn(amenities);
         when(accommodationMapper.toModel(any(AccommodationRequestDto.class)))
                 .thenReturn(accommodation);
         when(accommodationMapper.toDto(any(Accommodation.class)))
@@ -95,7 +93,7 @@ class AccommodationServiceImplTest {
     void findById_ExistingId_ReturnsAccommodationResponseDto() {
         // Given
         Long id = ID_1;
-        Accommodation accommodation = createAccomadation();
+        Accommodation accommodation = createAccommodation();
 
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
@@ -127,13 +125,13 @@ class AccommodationServiceImplTest {
     void findAll_ReturnsListOfAccommodationResponseDto() {
         // Given
         Pageable pageable = PageRequest.of(0, 10);
-        List<Accommodation> accommodations = List.of(createAccomadation());
+        List<Accommodation> accommodations = List.of(createAccommodation());
 
         // Mocking behavior
         when(accommodationRepository.findAll(pageable))
                 .thenReturn(new org.springframework.data.domain.PageImpl<>(accommodations));
         when(accommodationMapper.toDto(any(Accommodation.class)))
-                .thenReturn(getAccommodationDto(accommodations.get(0)));
+                .thenReturn(getAccommodationDto(accommodations.getFirst()));
 
         // When
         List<AccommodationResponseDto> result = accommodationService.findAll(pageable);
@@ -147,7 +145,7 @@ class AccommodationServiceImplTest {
     void deleteById_ExistingId_DeletesAccommodation() {
         // Given
         Long id = ID_1;
-        Accommodation accommodation = createAccomadation();
+        Accommodation accommodation = createAccommodation();
 
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
@@ -199,7 +197,7 @@ class AccommodationServiceImplTest {
         when(amenityRepository.findByIdIn(amenityIds)).thenReturn(Set.of());
 
         // Convert the set to a sorted list
-        List<Long> sortedAmenityIds = amenityIds.stream().sorted().collect(Collectors.toList());
+        List<Long> sortedAmenityIds = amenityIds.stream().sorted().toList();
 
         // Construct the expected message
         String expectedMessage = "Amenities with ids " + sortedAmenityIds + " do not exist.";
