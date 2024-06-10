@@ -25,4 +25,6 @@ public interface NotificationService {
     NotificationResponse unsubscribe(User user);
 
     String unsubscribe(Long chatId);
+
+    String getSubscribeLink();
 }

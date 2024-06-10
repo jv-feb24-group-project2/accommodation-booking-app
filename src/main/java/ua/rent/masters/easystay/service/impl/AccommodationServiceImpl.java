@@ -20,6 +20,7 @@ import ua.rent.masters.easystay.model.Amenity;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.AmenityRepository;
 import ua.rent.masters.easystay.service.AccommodationService;
+import ua.rent.masters.easystay.service.NotificationService;
 
 @Service
 @RequiredArgsConstructor
@@ -27,14 +28,14 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AccommodationRepository accommodationRepository;
     private final AmenityRepository amenityRepository;
     private final AccommodationMapper accommodationMapper;
-    private final TelegramNotificationService telegramNotificationService;
+    private final NotificationService notificationService;
 
     @Override
     public AccommodationResponseDto save(AccommodationRequestDto requestDto) {
         validateAmenitiesExist(requestDto.amenityIds());
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
         Accommodation savedAccommodation = accommodationRepository.save(accommodation);
-        telegramNotificationService.notifyAboutAccommodationStatus(savedAccommodation, CREATED);
+        notificationService.notifyAboutAccommodationStatus(savedAccommodation, CREATED);
         return accommodationMapper.toDto(savedAccommodation);
     }
 
@@ -64,7 +65,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodationForUpdate.setId(id);
         Accommodation savedAccommodationForUpdate =
                 accommodationRepository.save(accommodationForUpdate);
-        telegramNotificationService.notifyAboutAccommodationStatus(
+        notificationService.notifyAboutAccommodationStatus(
                 savedAccommodationForUpdate, UPDATED);
         return accommodationMapper.toDto(savedAccommodationForUpdate);
     }
@@ -75,7 +76,7 @@ public class AccommodationServiceImpl implements AccommodationService {
             new EntityNotFoundException("Can`t find an accommodation with id: " + id));
 
         accommodationRepository.deleteById(id);
-        telegramNotificationService.notifyAboutAccommodationStatus(accommodation, DELETED);
+        notificationService.notifyAboutAccommodationStatus(accommodation, DELETED);
     }
 
     @Override

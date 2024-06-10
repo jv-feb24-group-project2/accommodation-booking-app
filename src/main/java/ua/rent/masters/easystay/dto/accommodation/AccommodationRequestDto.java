@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Set;
+import lombok.Builder;
 import ua.rent.masters.easystay.model.Accommodation;
 
+@Builder
 public record AccommodationRequestDto(
         @NotNull
         Accommodation.Type type,
