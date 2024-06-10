@@ -100,12 +100,7 @@ public class TelegramNotificationService implements NotificationService {
 
     @Override
     public NotificationResponse subscribe(User user) {
-        String userInfo = user.getId() + SPLITTER + user.getEmail();
-        String link = TELEGRAM_URL
-                + botHandler.getBotUsername()
-                + START_COMMAND
-                + Base64.getUrlEncoder().encodeToString(userInfo.getBytes());
-        return new NotificationResponse(link);
+        return new NotificationResponse(generateLink(user));
     }
 
     @Override
@@ -121,10 +116,23 @@ public class TelegramNotificationService implements NotificationService {
                              .orElse(NOT_SUBSCRIBED);
     }
 
+    @Override
+    public String getSubscribeLink() {
+        return baseUrl + "/api/notification/subscribe";
+    }
+
     private String unsubscribeUser(User user) {
         user.setChatId(null);
         userRepository.save(user);
         return UNSUBSCRIBED;
+    }
+
+    private String generateLink(User user) {
+        String userInfo = user.getId() + SPLITTER + user.getEmail();
+        return TELEGRAM_URL
+                + botHandler.getBotUsername()
+                + START_COMMAND
+                + Base64.getUrlEncoder().encodeToString(userInfo.getBytes());
     }
 
     private Optional<User> getUserFromUserInfo(String userInfo) {
