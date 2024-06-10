@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import ua.rent.masters.easystay.dto.booking.BookingRequestDto;
 import ua.rent.masters.easystay.dto.booking.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.booking.BookingResponseDto;
+import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
 
 public interface BookingService {
@@ -23,4 +24,8 @@ public interface BookingService {
             Long bookingId, BookingRequestUpdateDto requestUpdateDto);
 
     void deleteById(Long bookingId);
+
+    List<Booking> getExpiredBookings();
+
+    void changeStatusOn(Booking booking, BookingStatus bookingStatus);
 }

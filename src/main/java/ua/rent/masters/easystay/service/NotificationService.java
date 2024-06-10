@@ -16,6 +16,8 @@ public interface NotificationService {
 
     void notifyAboutPaymentStatus(Payment payment, User user, PaymentStatus status);
 
+    void sendToAllManagers(String message);
+
     NotificationResponse subscribe(User user);
 
     String subscribe(String token, Long chatId);

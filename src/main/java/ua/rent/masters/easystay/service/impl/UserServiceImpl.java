@@ -1,6 +1,8 @@
 package ua.rent.masters.easystay.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,7 +53,28 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userUpdateProfileDto.firstName());
         user.setLastName(userUpdateProfileDto.lastName());
         user.setPassword(passwordEncoder.encode(userUpdateProfileDto.password()));
-        User savedUser = userRepository.save(user);
-        return userMapper.toDtoWithRoles(savedUser);
+        return userMapper.toDtoWithRoles(save(user));
+    }
+
+    @Override
+    public List<User> getSubscribedManagers() {
+        return userRepository.getAllByRoleAndChatIdIsPresent(Role.RoleName.ROLE_MANAGER);
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findByChatId(Long chatId) {
+        return userRepository.findByChatId(chatId);
+    }
+
+    @Override
+    public User getByIdAndEmail(Long id, String email) {
+        return userRepository.getByIdAndEmail(id, email).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "User with email %s and ID%d not exist.".formatted(email, id)));
     }
 }
