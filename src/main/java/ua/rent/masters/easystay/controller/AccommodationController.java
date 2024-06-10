@@ -32,7 +32,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Get All Accommodations",
-            description = "Get all accommodations. User with any Role can use this endpoint.")
+            description = "Anyone can get page of accommodations.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AccommodationResponseDto> getAll(@RequestParam(defaultValue = "0") int page,
@@ -42,8 +42,8 @@ public class AccommodationController {
     }
 
     @Operation(
-            summary = "Get Accommodations By Id",
-            description = "Get accommodation. User with any Role can use this endpoint.")
+            summary = "Get Accommodations By ID",
+            description = "Anyone can get accommodation by ID.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AccommodationResponseDto getById(@PathVariable Long id) {
@@ -52,7 +52,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Create Accommodation",
-            description = "Creates new accommodation. MANAGER can create new accommodations.")
+            description = "MANAGER can create new accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -63,7 +63,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Update Accommodation",
-            description = "Update accommodations. MANAGER can update accommodations")
+            description = "MANAGER can update accommodations")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
@@ -74,7 +74,7 @@ public class AccommodationController {
 
     @Operation(
             summary = "Delete Accommodation",
-            description = "Delete accommodations. MANAGER can delete accommodations.")
+            description = "MANAGER can delete accommodations.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

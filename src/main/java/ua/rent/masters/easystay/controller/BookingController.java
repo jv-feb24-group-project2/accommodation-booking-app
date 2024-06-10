@@ -70,7 +70,7 @@ public class BookingController {
 
     @Operation(
             summary = "Update Booking By Id",
-            description = "Manager can find any booking of any user.")
+            description = "Manager can modify any booking.")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -82,7 +82,7 @@ public class BookingController {
 
     @Operation(
             summary = "Delete Booking By Id",
-            description = "Manager can delete any booking of any user.")
+            description = "Manager can delete any booking.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -92,8 +92,9 @@ public class BookingController {
     }
 
     @Operation(
-            summary = "Find Booking By Parameters",
-            description = "Parametrised select by MANAGER.")
+            summary = "Get Booking By Parameters",
+            description = "MANAGER can get page of bookings with filtration by user's ID and "
+                    + "booking status.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")

@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,8 +30,8 @@ public class PaymentController {
 
     @Operation(
             summary = "Get Payment By Id",
-            description = "USER can get payment for theirs bookings, MANAGER can get "
-                    + "any payment")
+            description =
+                    "USER can get payment for theirs bookings, MANAGER can get any payment")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -40,18 +42,21 @@ public class PaymentController {
 
     @Operation(
             summary = "Get All Payments",
-            description = "USER can get all payments for theirs bookings, MANAGER get all "
-                    + "payments of all users")
+            description = "USER can get page of payments for theirs bookings, MANAGER get page"
+                    + " of payments of all users")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseStatus(HttpStatus.OK)
-    public List<PaymentResponseDto> getAllPayments(@AuthenticationPrincipal User user) {
-        return paymentService.getAllPayments(user);
+    public List<PaymentResponseDto> getAllPayments(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size,
+                                                   @AuthenticationPrincipal User user) {
+        Pageable pageable = PageRequest.of(page, size);
+        return paymentService.getAllPayments(user, pageable);
     }
 
     @Operation(
             summary = "Create Payment Session",
-            description = "Anyone can do payment for anyone. No roles restrictions")
+            description = "Anyone can make a payment for anyone. No roles restrictions")
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/create-session/{bookingId}")
@@ -62,7 +67,7 @@ public class PaymentController {
 
     @Operation(
             summary = "Success URL",
-            description = "Payment system can access here to inform that payment was done.")
+            description = "Payment system access to inform that payment was done.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/success")
     public PaymentResponseDto handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
@@ -72,7 +77,7 @@ public class PaymentController {
 
     @Operation(
             summary = "Cancel URL",
-            description = "Payment system can access here to inform that payment was canceled.")
+            description = "Payment system access to inform that payment was canceled.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
     public PaymentCancelResponseDto handlePaymentCancel(

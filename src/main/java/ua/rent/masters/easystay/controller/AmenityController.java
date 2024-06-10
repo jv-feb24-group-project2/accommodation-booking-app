@@ -32,8 +32,8 @@ public class AmenityController {
 
     @Operation(
             summary = "Get All Amenities",
-            description = "Get all amenities. MANAGER can use this endpoint.")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+            description = "MANAGER can get page of amenities.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AmenityResponseDto> getAll(
@@ -46,7 +46,7 @@ public class AmenityController {
     @Operation(
             summary = "Get Amenity By Id",
             description = "Get amenity by id. MANAGER can use this endpoint.")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AmenityResponseDto getById(@PathVariable Long id) {
@@ -56,7 +56,7 @@ public class AmenityController {
     @Operation(
             summary = "Create Amenity",
             description = "Create amenity. MANAGER can new amenities.")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public AmenityResponseDto create(
@@ -67,7 +67,7 @@ public class AmenityController {
     @Operation(
             summary = "Update Amenities",
             description = "Update amenities. MANAGER can update amenities")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AmenityResponseDto update(@PathVariable Long id,
@@ -78,7 +78,7 @@ public class AmenityController {
     @Operation(
             summary = "Delete amenities",
             description = "Delete amenities. MANAGER can delete amenities.")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
