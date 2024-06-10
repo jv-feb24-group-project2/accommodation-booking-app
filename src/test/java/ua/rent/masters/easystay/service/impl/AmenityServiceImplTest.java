@@ -110,6 +110,7 @@ class AmenityServiceImplTest {
         assertNotNull(actual);
         int expectedSize = 1;
         assertEquals(expectedSize, actual.size());
+        EqualsBuilder.reflectionEquals(getAmenityResponse(), actual.getFirst());
     }
 
     @Test
