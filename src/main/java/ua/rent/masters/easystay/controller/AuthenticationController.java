@@ -10,6 +10,7 @@ import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.login.UserLoginRequestDto;
 import ua.rent.masters.easystay.dto.user.login.UserLoginResponseDto;
 import ua.rent.masters.easystay.dto.user.registration.UserRegistrationRequestDto;
+import ua.rent.masters.easystay.dto.user.registration.UserRegistrationResponseDto;
 import ua.rent.masters.easystay.security.authentication.AuthenticationService;
 import ua.rent.masters.easystay.security.registration.RegistrationService;
 
@@ -27,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registration")
-    public UserResponseDto register(@RequestBody @Valid
+    public UserRegistrationResponseDto register(@RequestBody @Valid
                                     UserRegistrationRequestDto userRegistrationRequestDto) {
         return registrationService.register(userRegistrationRequestDto);
     }

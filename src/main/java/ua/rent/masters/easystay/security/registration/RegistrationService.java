@@ -1,8 +1,8 @@
 package ua.rent.masters.easystay.security.registration;
 
-import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.registration.UserRegistrationRequestDto;
+import ua.rent.masters.easystay.dto.user.registration.UserRegistrationResponseDto;
 
 public interface RegistrationService {
-    UserResponseDto register(UserRegistrationRequestDto requestDto);
+    UserRegistrationResponseDto register(UserRegistrationRequestDto requestDto);
 }

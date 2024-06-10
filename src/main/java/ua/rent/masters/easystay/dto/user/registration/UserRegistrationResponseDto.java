@@ -7,3 +7,4 @@ public record UserRegistrationResponseDto(
         String lastName
 ) {
 }
+
