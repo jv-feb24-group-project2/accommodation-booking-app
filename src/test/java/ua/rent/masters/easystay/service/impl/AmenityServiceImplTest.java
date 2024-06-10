@@ -72,7 +72,6 @@ class AmenityServiceImplTest {
     @Test
     @DisplayName("Find amenity by ID successfully")
     void findById_ExistingId_ReturnAmenityResponseDto() {
-
         // Given
         Amenity savedAmenity = createAmenity();
         savedAmenity.setId(ID_1);
@@ -109,14 +108,13 @@ class AmenityServiceImplTest {
 
         // Then
         assertNotNull(actual);
-        assertEquals(1, actual.size());
-        EqualsBuilder.reflectionEquals(getAmenityResponse(), actual.get(0));
+        int expectedSize = 1;
+        assertEquals(expectedSize, actual.size());
     }
 
     @Test
     @DisplayName("Update an existing amenity successfully")
     void update_ExistingId_ReturnUpdatedAmenityResponseDto() {
-
         // Given
         Long id = ID_1;
         Amenity amenityToUpdate = createAmenity();

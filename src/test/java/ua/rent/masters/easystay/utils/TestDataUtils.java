@@ -76,10 +76,6 @@ public class TestDataUtils {
     }
 
     public static AmenityResponseDto getAmenityResponse() {
-        return AmenityResponseDto.builder()
-                .id(ID_1)
-                .name(CLINING)
-                .build();
+        return new AmenityResponseDto(ID_1, CLINING);
     }
-
 }
