@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
+import ua.rent.masters.easystay.dto.amenity.AmenityRequestDto;
+import ua.rent.masters.easystay.dto.amenity.AmenityResponseDto;
 import ua.rent.masters.easystay.model.Accommodation;
 import ua.rent.masters.easystay.model.Amenity;
 
@@ -16,6 +18,7 @@ public class TestDataUtils {
     public static final int ROOMS_QUANTITY = 5;
     public static final int AVAILABILITIES_QUANTITY = 7;
     public static final BigDecimal DAILY_RATE = BigDecimal.valueOf(200.00);
+    public static final String CLINING = "Clining";
     public static final String LOCATION = "Odesa, Deribasivska str.23/5";
     public static final Set<Long> AMENITY_IDS = Set.of(ID_1, ID_2);
 
@@ -60,5 +63,19 @@ public class TestDataUtils {
                         .map(Amenity::getId)
                         .collect(Collectors.toSet())
         );
+    }
+
+    public static AmenityRequestDto getAmenityRequest() {
+        return new AmenityRequestDto(CLINING);
+    }
+
+    public static Amenity createAmenity() {
+        Amenity amenity = new Amenity();
+        amenity.setName(CLINING);
+        return amenity;
+    }
+
+    public static AmenityResponseDto getAmenityResponse() {
+        return new AmenityResponseDto(ID_1, CLINING);
     }
 }
