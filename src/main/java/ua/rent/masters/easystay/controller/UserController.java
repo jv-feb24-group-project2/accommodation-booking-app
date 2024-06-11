@@ -2,6 +2,7 @@ package ua.rent.masters.easystay.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.update.UserUpdateProfileDto;
@@ -26,12 +28,14 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER')")
+    @ResponseStatus(HttpStatus.OK)
     public UserResponseDto getUser(@AuthenticationPrincipal User user) {
         return userMapper.toDtoWithRoles(user);
     }
 
-    @PutMapping("/{id}/role")
+    @PutMapping("/{id}/roles")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponseDto updateRoles(
             @PathVariable Long id,
             @RequestBody @Valid UserUpdateRolesDto userUpdateRolesDto) {
@@ -40,6 +44,7 @@ public class UserController {
 
     @PutMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponseDto updateUserProfile(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserUpdateProfileDto userUpdateProfileDto) {
