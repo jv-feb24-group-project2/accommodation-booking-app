@@ -28,13 +28,13 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 ### 🚀 Current Functionalities
 - ##### Authentication
 
-| HTTP method              | Endpoint            | Role  | Description                      |
-|--------------------------|---------------------|-------|----------------------------------|
-| POST                     | /api/auth/register  | ---   | Register a new user              |
-| POST                     | /api/auth/login     | ---   | Authenticate a user              |
-| GET                      | /api/users/me       | USER  | Get user profile information     |
-| PUT                      | /api/users/me       | USER  | Update user profile information  |
-| PUT                      | /api/users/3/role   | ADMIN | Update user roles                |
+| HTTP method              | Endpoint             | Role  | Description                      |
+|--------------------------|----------------------|-------|----------------------------------|
+| POST                     | /api/auth/register   | ---   | Register a new user              |
+| POST                     | /api/auth/login      | ---   | Authenticate a user              |
+| GET                      | /api/users/me        | USER  | Get user profile information     |
+| PUT                      | /api/users/me        | USER  | Update user profile information  |
+| PUT                      | /api/users/{id}/role | ADMIN | Update user roles                |
 
 
 - ##### Accommodations
@@ -73,9 +73,9 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 | POST        | /api/bookings      | USER    | Creat new accommodation bookings                                      |
 | GET         | /api/bookings/my   | USER    | Get booking history of current customer                               |
 | GET         | /api/bookings/{id} | MANAGER | Get booking by ID                                                     |
-| GET         |  /api/bookings     | MANAGER | Get page of bookings with filtration by user ID and/or booking status |
-| PUT         |/api/bookings/{id}  | MANAGER | Update booking by ID                                               |
-| DELETE      |/api/bookings/{id}  | MANAGER | Delete booking by ID                                               |
+| GET         | /api/bookings      | MANAGER | Get page of bookings with filtration by user ID and/or booking status |
+| PUT         | /api/bookings/{id} | MANAGER | Update booking by ID                                               |
+| DELETE      | /api/bookings/{id} | MANAGER | Delete booking by ID                                               |
 
   
 - #####  Swagger Documentation
