@@ -1,18 +1,23 @@
 package ua.rent.masters.easystay.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static ua.rent.masters.easystay.utils.TestDataUtils.AMENITY_IDS;
 import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAmenity;
+import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenityRequest;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenityResponse;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -167,5 +172,41 @@ class AmenityServiceImplTest {
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> amenityService.deleteById(id));
         assertEquals("Can`t find an amenity with id: " + ID_1, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Verify validateAmenitiesExist() method works")
+    void validateAmenitiesExist_ExistingAmenities_DoesNotThrowException() {
+        // Given
+        Set<Long> amenityIds = AMENITY_IDS;
+        Set<Amenity> amenities = getAmenities();
+
+        // Mocking behavior
+        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
+
+        // When & Then
+        assertDoesNotThrow(() -> amenityService.validateAmenitiesExist(amenityIds));
+    }
+
+    @Test
+    @DisplayName("Verify validateAmenitiesExist() method "
+            + "throws EntityNotFoundException for non-existing amenities")
+    void validateAmenitiesExist_NonExistingAmenities_ThrowsEntityNotFoundException() {
+        // Given
+        Set<Long> amenityIds = AMENITY_IDS;
+
+        // Mocking behavior
+        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(Set.of());
+
+        // Convert the set to a sorted list
+        List<Long> sortedAmenityIds = amenityIds.stream().sorted().collect(Collectors.toList());
+
+        // Construct the expected message
+        String expectedMessage = "Amenities with ids " + sortedAmenityIds + " do not exist.";
+
+        // When & Then
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> amenityService.validateAmenitiesExist(amenityIds));
+        assertEquals(expectedMessage, exception.getMessage());
     }
 }

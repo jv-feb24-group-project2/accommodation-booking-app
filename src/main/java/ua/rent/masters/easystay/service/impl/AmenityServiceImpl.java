@@ -1,6 +1,9 @@
 package ua.rent.masters.easystay.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,6 +56,20 @@ public class AmenityServiceImpl implements AmenityService {
     public void deleteById(Long id) {
         checkAmenityExists(id);
         amenityRepository.deleteById(id);
+    }
+
+    @Override
+    public void validateAmenitiesExist(Set<Long> amenityIds) {
+        Set<Amenity> amenitiesDB = amenityRepository.findByIdIn(amenityIds);
+        Set<Long> existingAmenityIds = amenitiesDB.stream()
+                .map(Amenity::getId)
+                .collect(Collectors.toSet());
+        Set<Long> nonExistingCategoryIds = new HashSet<>(amenityIds);
+        nonExistingCategoryIds.removeAll(existingAmenityIds);
+        if (!nonExistingCategoryIds.isEmpty()) {
+            throw new EntityNotFoundException("Amenities with ids "
+                    + nonExistingCategoryIds + " do not exist.");
+        }
     }
 
     private void checkAmenityExists(Long id) {
