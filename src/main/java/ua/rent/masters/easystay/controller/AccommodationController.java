@@ -25,7 +25,7 @@ import ua.rent.masters.easystay.service.AccommodationService;
 @RestController
 @RequestMapping(value = "/accommodation")
 public class AccommodationController {
-    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int DEFAULT_PAGE_SIZE = 5;
     private final AccommodationService accommodationService;
 
     @ResponseStatus(HttpStatus.OK)

@@ -25,7 +25,7 @@ import ua.rent.masters.easystay.service.AmenityService;
 @RestController
 @RequestMapping(value = "/amenity")
 public class AmenityController {
-    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int DEFAULT_PAGE_SIZE = 5;
     private final AmenityService amenityService;
 
     @ResponseStatus(HttpStatus.OK)
