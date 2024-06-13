@@ -10,7 +10,7 @@ import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
 import static ua.rent.masters.easystay.model.AccommodationStatus.DELETED;
 import static ua.rent.masters.easystay.utils.TestDataUtils.AMENITY_IDS;
 import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
-import static ua.rent.masters.easystay.utils.TestDataUtils.createAccomadation;
+import static ua.rent.masters.easystay.utils.TestDataUtils.createAccommodation;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccommodationRequestDto;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAccommodationDto;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
@@ -69,7 +69,7 @@ class AccommodationServiceImplTest {
     void save_ValidAccommodationRequestDto_ReturnsAccommodationResponseDto() {
         // Given
         AccommodationRequestDto requestDto = createAccommodationRequestDto();
-        Accommodation accommodation = createAccomadation();
+        Accommodation accommodation = createAccommodation();
         Set<Long> amenityIds = AMENITY_IDS;
 
         // Мокінг поведінки
@@ -95,7 +95,7 @@ class AccommodationServiceImplTest {
     void findById_ExistingId_ReturnsAccommodationResponseDto() {
         // Given
         Long id = ID_1;
-        Accommodation accommodation = createAccomadation();
+        Accommodation accommodation = createAccommodation();
 
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
@@ -127,7 +127,7 @@ class AccommodationServiceImplTest {
     void findAll_ReturnsListOfAccommodationResponseDto() {
         // Given
         Pageable pageable = PageRequest.of(0, 10);
-        List<Accommodation> accommodations = List.of(createAccomadation());
+        List<Accommodation> accommodations = List.of(createAccommodation());
 
         // Mocking behavior
         when(accommodationRepository.findAll(pageable))
@@ -147,7 +147,7 @@ class AccommodationServiceImplTest {
     void deleteById_ExistingId_DeletesAccommodation() {
         // Given
         Long id = ID_1;
-        Accommodation accommodation = createAccomadation();
+        Accommodation accommodation = createAccommodation();
 
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
