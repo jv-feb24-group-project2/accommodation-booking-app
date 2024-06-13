@@ -1,6 +1,5 @@
 package ua.rent.masters.easystay.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +14,6 @@ import ua.rent.masters.easystay.exception.BookingException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
-import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.AccommodationService;
@@ -28,7 +26,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
     private final AccommodationService accommodationService;
-    private final NotificationService telegtramNotificationService;
+    private final NotificationService notificationService;
     private final UserRepository userRepository;
 
     @Override
@@ -41,14 +39,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.PENDING);
 
         Booking savedBooking = bookingRepository.save(booking);
-        User user = userRepository.findById(booking.getUserId()).orElseThrow(
-                () -> new EntityNotFoundException("Can't get user with id: " + booking.getUserId())
-        );
 
-        telegtramNotificationService.notifyAboutBookingStatus(
-                booking,
-                user,
-                BookingStatus.PENDING);
+        notificationService.sendToUser(booking.toMessage(), booking.getUserId());
 
         return bookingMapper.toDto(savedBooking);
     }

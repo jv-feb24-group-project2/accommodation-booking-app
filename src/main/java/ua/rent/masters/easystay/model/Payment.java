@@ -1,5 +1,9 @@
 package ua.rent.masters.easystay.model;
 
+import static java.lang.System.lineSeparator;
+import static ua.rent.masters.easystay.model.PaymentStatus.EXPIRED;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,12 +26,26 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private PaymentStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
+
     private String sessionUrl;
+
     private String sessionId;
+
+    @Column(nullable = false)
     private BigDecimal amountToPay;
+
+    public String toMessage() {
+        return status.name() + ':' + lineSeparator()
+                + "Booking ID: " + booking.getId() + lineSeparator()
+                + "Amount: " + amountToPay + lineSeparator()
+                + (status == EXPIRED ? "Please re-initiate the payment process." : "");
+    }
 }

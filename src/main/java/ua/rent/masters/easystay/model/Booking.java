@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.model;
 
+import static java.lang.System.lineSeparator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,4 +45,12 @@ public class Booking {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public String toMessage() {
+        return status.name() + ':' + lineSeparator()
+                + "Booking ID: " + id + lineSeparator()
+                + "Accommodation ID: " + accommodationId + lineSeparator()
+                + "CheckIn Date: " + checkInDate + lineSeparator()
+                + "CheckOut Date: " + checkOutDate;
+    }
 }

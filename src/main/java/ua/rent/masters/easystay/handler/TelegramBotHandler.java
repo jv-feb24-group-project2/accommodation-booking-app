@@ -1,5 +1,6 @@
 package ua.rent.masters.easystay.handler;
 
+import jakarta.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ import ua.rent.masters.easystay.service.NotificationService;
 public class TelegramBotHandler extends TelegramLongPollingBot {
     private final UpdateHandlerContext updateHandlerContext;
     private final String botUsername;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService;
 
     public TelegramBotHandler(
             @Lazy NotificationService notificationService,
@@ -27,6 +28,12 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
         super(botToken);
         this.botUsername = botUsername;
         this.updateHandlerContext = new UpdateHandlerContext(notificationService);
+        this.executorService = Executors.newSingleThreadExecutor(r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            thread.setName("TelegramBotHandler-Executor");
+            return thread;
+        });
     }
 
     @Override
@@ -64,5 +71,10 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
                 throw new TelegramException("Can't send message to chatId: " + chatId, e);
             }
         });
+    }
+
+    @PreDestroy
+    public void shutdownExecutorService() {
+        executorService.shutdown();
     }
 }

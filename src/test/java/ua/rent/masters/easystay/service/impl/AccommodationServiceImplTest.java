@@ -6,8 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static ua.rent.masters.easystay.model.AccommodationStatus.CREATED;
-import static ua.rent.masters.easystay.model.AccommodationStatus.DELETED;
 import static ua.rent.masters.easystay.utils.TestDataUtils.AMENITY_IDS;
 import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccomadation;
@@ -81,7 +79,7 @@ class AccommodationServiceImplTest {
                 .thenReturn(getAccommodationDto(accommodation));
         when(accommodationRepository.save(any(Accommodation.class)))
                 .thenReturn(accommodation);
-        doNothing().when(notificationService).notifyAboutAccommodationStatus(accommodation,CREATED);
+        doNothing().when(notificationService).sendToAllManagers(any(String.class));
 
         // When
         AccommodationResponseDto result = accommodationService.save(requestDto);
@@ -152,7 +150,7 @@ class AccommodationServiceImplTest {
         // Mocking behavior
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(accommodation));
         doNothing().when(accommodationRepository).deleteById(id);
-        doNothing().when(notificationService).notifyAboutAccommodationStatus(accommodation,DELETED);
+        doNothing().when(notificationService).sendToAllManagers(any(String.class));
 
         // When & Then
         accommodationService.deleteById(id);

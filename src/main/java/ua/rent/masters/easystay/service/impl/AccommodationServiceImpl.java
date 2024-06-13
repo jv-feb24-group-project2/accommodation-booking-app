@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.rent.masters.easystay.dto.accommodation.AccommodationRequestDto;
@@ -29,13 +30,15 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AmenityRepository amenityRepository;
     private final AccommodationMapper accommodationMapper;
     private final NotificationService notificationService;
+    @Value("${app.base.url}")
+    private String baseUrl;
 
     @Override
     public AccommodationResponseDto save(AccommodationRequestDto requestDto) {
         validateAmenitiesExist(requestDto.amenityIds());
         Accommodation accommodation = accommodationMapper.toModel(requestDto);
         Accommodation savedAccommodation = accommodationRepository.save(accommodation);
-        notificationService.notifyAboutAccommodationStatus(savedAccommodation, CREATED);
+        notificationService.sendToAllManagers(savedAccommodation.toMessage(baseUrl, CREATED));
         return accommodationMapper.toDto(savedAccommodation);
     }
 
@@ -63,11 +66,9 @@ public class AccommodationServiceImpl implements AccommodationService {
         }
         Accommodation accommodationForUpdate = accommodationMapper.toModel(requestDto);
         accommodationForUpdate.setId(id);
-        Accommodation savedAccommodationForUpdate =
-                accommodationRepository.save(accommodationForUpdate);
-        notificationService.notifyAboutAccommodationStatus(
-                savedAccommodationForUpdate, UPDATED);
-        return accommodationMapper.toDto(savedAccommodationForUpdate);
+        Accommodation updatedAccommodation = accommodationRepository.save(accommodationForUpdate);
+        notificationService.sendToAllManagers(updatedAccommodation.toMessage(baseUrl, UPDATED));
+        return accommodationMapper.toDto(updatedAccommodation);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class AccommodationServiceImpl implements AccommodationService {
             new EntityNotFoundException("Can`t find an accommodation with id: " + id));
 
         accommodationRepository.deleteById(id);
-        notificationService.notifyAboutAccommodationStatus(accommodation, DELETED);
+        notificationService.sendToAllManagers(accommodation.toMessage(baseUrl, DELETED));
     }
 
     @Override
@@ -89,11 +90,11 @@ public class AccommodationServiceImpl implements AccommodationService {
         Set<Long> existingAmenityIds = amenitiesDB.stream()
                 .map(Amenity::getId)
                 .collect(Collectors.toSet());
-        Set<Long> nonExistingCategoryIds = new HashSet<>(amenityIds);
-        nonExistingCategoryIds.removeAll(existingAmenityIds);
-        if (!nonExistingCategoryIds.isEmpty()) {
+        Set<Long> nonExistingIds = new HashSet<>(amenityIds);
+        nonExistingIds.removeAll(existingAmenityIds);
+        if (!nonExistingIds.isEmpty()) {
             throw new EntityNotFoundException("Amenities with ids "
-                    + nonExistingCategoryIds + " do not exist.");
+                    + nonExistingIds + " do not exist.");
         }
     }
 }

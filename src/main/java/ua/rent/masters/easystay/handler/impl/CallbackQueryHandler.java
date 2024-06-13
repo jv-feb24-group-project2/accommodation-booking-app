@@ -21,7 +21,8 @@ public class CallbackQueryHandler implements UpdateHandler {
             String text = callbackQuery.getData();
             long chatId = callbackQuery.getFrom().getId();
             if (text.equals(UNSUBSCRIBE)) {
-                botHandler.send(chatId, notificationService.unsubscribe(chatId));
+                String message = notificationService.unsubscribe(chatId).message();
+                botHandler.send(chatId, message);
             }
         }
     }
