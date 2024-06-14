@@ -46,8 +46,8 @@ public class SecurityConfig {
                                         "/payments/success*",
                                         "/payments/cancel*",
                                         "/auth/**",
-                                        "/accommodation",
-                                        "/accommodation/{id}",
+                                        "/accommodations",
+                                        "/accommodations/{id}",
                                         "/error",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**"

@@ -13,7 +13,7 @@ import ua.rent.masters.easystay.service.NotificationService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notification")
+@RequestMapping("/notifications")
 public class NotificationController {
     private final NotificationService notificationService;
 
