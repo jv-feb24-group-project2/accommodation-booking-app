@@ -63,7 +63,7 @@ public class BookingController {
             @PathVariable("id") Long bookingId,
             @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto,
             @AuthenticationPrincipal User user) {
-        return bookingService.updateById(bookingId, requestUpdateDto, user.getId());
+        return bookingService.updateById(bookingId, requestUpdateDto, user);
     }
 
     @DeleteMapping("/{id}")

@@ -90,14 +90,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("User does not exist"));
+            Long bookingId,
+            BookingRequestUpdateDto requestUpdateDto,
+            User user) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
 
-        boolean isManager = checkUserRole(user);
-
-        if (!isManager && !booking.getUserId().equals(user.getId())) {
+        if (!isManager(user) && !booking.getUserId().equals(user.getId())) {
             throw new BookingException("You can update only your own bookings");
         }
 
@@ -128,7 +126,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private boolean isBookingOverlapping(
-            List<Booking> existingBookings, BookingRequestDto requestDto) {
+            List<Booking> existingBookings,
+            BookingRequestDto requestDto) {
         return existingBookings.stream()
                 .anyMatch(b -> !(requestDto.checkOutDate()
                         .isBefore(b.getCheckInDate())
@@ -153,8 +152,9 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void updateBookingWithDto(Booking booking,
-                                      BookingRequestUpdateDto requestUpdateDto) {
+    private void updateBookingWithDto(
+            Booking booking,
+            BookingRequestUpdateDto requestUpdateDto) {
         if (requestUpdateDto.checkInDate() != null) {
             booking.setCheckInDate(requestUpdateDto.checkInDate());
         }
@@ -183,7 +183,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private boolean checkUserRole(User user) {
+    private boolean isManager(User user) {
         return user.getRoles().stream()
                 .anyMatch(role -> role.getName().equals(Role.RoleName.ROLE_MANAGER));
     }
