@@ -31,7 +31,7 @@ public class AmenityController {
     @GetMapping
     public List<AmenityResponseDto> getAll(
             @ParameterObject
-            @PageableDefault(sort = {"id", "name"}, value = 10) Pageable pageable
+            @PageableDefault(sort = {"id", "name"}, value = 5) Pageable pageable
     ) {
         return amenityService.findAll(pageable);
     }
