@@ -25,14 +25,13 @@ import ua.rent.masters.easystay.service.AccommodationService;
 @RestController
 @RequestMapping(value = "/accommodation")
 public class AccommodationController {
-    public static final int DEFAULT_PAGE_SIZE = 5;
     private final AccommodationService accommodationService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AccommodationResponseDto> getAll(
             @ParameterObject
-            @PageableDefault(sort = {"id", "type"}, value = DEFAULT_PAGE_SIZE) Pageable pageable
+            @PageableDefault(sort = {"id", "type"}, value = 5) Pageable pageable
     ) {
         return accommodationService.findAll(pageable);
     }
