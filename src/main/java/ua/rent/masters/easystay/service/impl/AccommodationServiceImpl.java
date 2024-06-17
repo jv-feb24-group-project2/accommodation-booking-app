@@ -45,7 +45,7 @@ public class AccommodationServiceImpl implements AccommodationService {
 
     @Override
     public AccommodationResponseDto findById(Long id) {
-        Accommodation accommodation = getAccommodation(id);
+        Accommodation accommodation = getById(id);
         return accommodationMapper.toDto(accommodation);
     }
 
@@ -71,7 +71,7 @@ public class AccommodationServiceImpl implements AccommodationService {
 
     @Override
     public void deleteById(Long id) {
-        Accommodation accommodation = getAccommodation(id);
+        Accommodation accommodation = getById(id);
         accommodationRepository.deleteById(id);
         notificationService.sendToAllManagers(accommodation.toMessage(baseUrl, DELETED));
     }
@@ -81,8 +81,8 @@ public class AccommodationServiceImpl implements AccommodationService {
         return accommodationRepository.findAllById(accommodationIds);
     }
 
-    private Accommodation getAccommodation(Long id) {
+    private Accommodation getById(Long id) {
         return accommodationRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can`t find an accommodation with id: " + id));
+                new EntityNotFoundException("Can`t find an accommodation by ID: " + id));
     }
 }

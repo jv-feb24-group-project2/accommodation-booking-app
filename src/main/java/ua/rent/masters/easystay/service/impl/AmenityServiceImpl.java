@@ -60,21 +60,21 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     public void validateAmenitiesExist(Set<Long> amenityIds) {
-        Set<Amenity> amenitiesDB = amenityRepository.findByIdIn(amenityIds);
-        Set<Long> existingAmenityIds = amenitiesDB.stream()
+        Set<Amenity> amenities = amenityRepository.findByIdIn(amenityIds);
+        Set<Long> existingIds = amenities.stream()
                 .map(Amenity::getId)
                 .collect(Collectors.toSet());
-        Set<Long> nonExistingCategoryIds = new HashSet<>(amenityIds);
-        nonExistingCategoryIds.removeAll(existingAmenityIds);
-        if (!nonExistingCategoryIds.isEmpty()) {
+        Set<Long> nonExistingIds = new HashSet<>(amenityIds);
+        nonExistingIds.removeAll(existingIds);
+        if (!nonExistingIds.isEmpty()) {
             throw new EntityNotFoundException("Amenities with ids "
-                    + nonExistingCategoryIds + " do not exist.");
+                    + nonExistingIds + " do not exist.");
         }
     }
 
     private void checkAmenityExists(Long id) {
         if (!amenityRepository.existsById(id)) {
-            throw new EntityNotFoundException("Can`t find an amenity with id: " + id);
+            throw new EntityNotFoundException("Can`t find an amenity by ID: " + id);
         }
     }
 }

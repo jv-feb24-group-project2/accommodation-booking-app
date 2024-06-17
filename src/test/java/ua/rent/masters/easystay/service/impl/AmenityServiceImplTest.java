@@ -171,7 +171,7 @@ class AmenityServiceImplTest {
         // When & Then
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> amenityService.deleteById(id));
-        assertEquals("Can`t find an amenity with id: " + ID_1, exception.getMessage());
+        assertEquals("Can`t find an amenity by ID: " + ID_1, exception.getMessage());
     }
 
     @Test

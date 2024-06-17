@@ -65,19 +65,19 @@ class AccommodationServiceImplTest {
         // Given
         AccommodationRequestDto requestDto = createAccommodationRequestDto();
         Accommodation accommodation = createAccomadation();
-        Accommodation savedAccommodation = createAccomadation();
-        AccommodationResponseDto accommodationResponseDto = getAccommodationDto(savedAccommodation);
+        AccommodationResponseDto accommodationResponseDto = getAccommodationDto(accommodation);
         Set<Long> amenityIds = AMENITY_IDS;
 
-        // Мокінг поведінки
+        // Mocking behavior
         doNothing().when(amenityService).validateAmenitiesExist(amenityIds);
         when(accommodationMapper.toModel(any(AccommodationRequestDto.class)))
                 .thenReturn(accommodation);
         when(accommodationRepository.save(any(Accommodation.class)))
-                .thenReturn(savedAccommodation);
+                .thenReturn(accommodation);
         when(accommodationMapper.toDto(any(Accommodation.class)))
                 .thenReturn(accommodationResponseDto);
         doNothing().when(notificationService)
+                .notifyAboutAccommodationStatus(accommodation, CREATED);
                 .notifyAboutAccommodationStatus(savedAccommodation, CREATED);
                 .thenReturn(accommodation);
         doNothing().when(notificationService).sendToAllManagers(any(String.class));
@@ -169,7 +169,7 @@ class AccommodationServiceImplTest {
         // When & Then
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> accommodationService.deleteById(id));
-        assertEquals("Can`t find an accommodation with id: "
+        assertEquals("Can`t find an accommodation by ID: "
                 + id, exception.getMessage());
     }
 }
