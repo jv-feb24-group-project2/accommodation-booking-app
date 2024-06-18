@@ -11,12 +11,9 @@ import static ua.rent.masters.easystay.utils.TestDataUtils.ID_1;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccomadation;
 import static ua.rent.masters.easystay.utils.TestDataUtils.createAccommodationRequestDto;
 import static ua.rent.masters.easystay.utils.TestDataUtils.getAccommodationDto;
-import static ua.rent.masters.easystay.utils.TestDataUtils.getAmenities;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,9 +28,8 @@ import ua.rent.masters.easystay.dto.accommodation.AccommodationResponseDto;
 import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.mapper.AccommodationMapper;
 import ua.rent.masters.easystay.model.Accommodation;
-import ua.rent.masters.easystay.model.Amenity;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
-import ua.rent.masters.easystay.repository.AmenityRepository;
+import ua.rent.masters.easystay.service.AmenityService;
 import ua.rent.masters.easystay.service.NotificationService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +42,7 @@ class AccommodationServiceImplTest {
     private AccommodationMapper accommodationMapper;
 
     @Mock
-    private AmenityRepository amenityRepository;
+    private AmenityService amenityService;
 
     @Mock
     private AccommodationRepository accommodationRepository;
@@ -58,7 +54,7 @@ class AccommodationServiceImplTest {
     void afterEach() {
         verifyNoMoreInteractions(accommodationRepository,
                 accommodationMapper,
-                amenityRepository,
+                amenityService,
                 notificationService);
     }
 
@@ -68,17 +64,16 @@ class AccommodationServiceImplTest {
         // Given
         AccommodationRequestDto requestDto = createAccommodationRequestDto();
         Accommodation accommodation = createAccomadation();
-        Set<Long> amenityIds = AMENITY_IDS;
+        AccommodationResponseDto accommodationResponseDto = getAccommodationDto(accommodation);
 
-        // Мокінг поведінки
-        Set<Amenity> amenities = getAmenities();
-        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
+        // Mocking behavior
+        doNothing().when(amenityService).validateAmenitiesExist(AMENITY_IDS);
         when(accommodationMapper.toModel(any(AccommodationRequestDto.class)))
                 .thenReturn(accommodation);
-        when(accommodationMapper.toDto(any(Accommodation.class)))
-                .thenReturn(getAccommodationDto(accommodation));
         when(accommodationRepository.save(any(Accommodation.class)))
                 .thenReturn(accommodation);
+        when(accommodationMapper.toDto(any(Accommodation.class)))
+                .thenReturn(accommodationResponseDto);
         doNothing().when(notificationService).sendToAllManagers(any(String.class));
 
         // When
@@ -131,7 +126,7 @@ class AccommodationServiceImplTest {
         when(accommodationRepository.findAll(pageable))
                 .thenReturn(new org.springframework.data.domain.PageImpl<>(accommodations));
         when(accommodationMapper.toDto(any(Accommodation.class)))
-                .thenReturn(getAccommodationDto(accommodations.get(0)));
+                .thenReturn(getAccommodationDto(accommodations.getFirst()));
 
         // When
         List<AccommodationResponseDto> result = accommodationService.findAll(pageable);
@@ -168,43 +163,7 @@ class AccommodationServiceImplTest {
         // When & Then
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> accommodationService.deleteById(id));
-        assertEquals("Can`t find an accommodation with id: "
+        assertEquals("Can`t find an accommodation by ID: "
                 + id, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Verify validateAmenitiesExist() method works")
-    void validateAmenitiesExist_ExistingAmenities_DoesNotThrowException() {
-        // Given
-        Set<Long> amenityIds = AMENITY_IDS;
-        Set<Amenity> amenities = getAmenities();
-
-        // Mocking behavior
-        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(amenities);
-
-        // When & Then
-        accommodationService.validateAmenitiesExist(amenityIds);
-    }
-
-    @Test
-    @DisplayName("Verify validateAmenitiesExist() method "
-            + "throws EntityNotFoundException for non-existing amenities")
-    void validateAmenitiesExist_NonExistingAmenities_ThrowsEntityNotFoundException() {
-        // Given
-        Set<Long> amenityIds = AMENITY_IDS;
-
-        // Mocking behavior
-        when(amenityRepository.findByIdIn(amenityIds)).thenReturn(Set.of());
-
-        // Convert the set to a sorted list
-        List<Long> sortedAmenityIds = amenityIds.stream().sorted().collect(Collectors.toList());
-
-        // Construct the expected message
-        String expectedMessage = "Amenities with ids " + sortedAmenityIds + " do not exist.";
-
-        // When & Then
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> accommodationService.validateAmenitiesExist(amenityIds));
-        assertEquals(expectedMessage, exception.getMessage());
     }
 }
