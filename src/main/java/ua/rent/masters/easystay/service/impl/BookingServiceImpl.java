@@ -14,6 +14,8 @@ import ua.rent.masters.easystay.exception.BookingException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
+import ua.rent.masters.easystay.model.Role;
+import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.AccommodationService;
@@ -81,8 +83,14 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto) {
+            Long bookingId,
+            BookingRequestUpdateDto requestUpdateDto,
+            User user) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
+
+        if (!isManager(user) && !booking.getUserId().equals(user.getId())) {
+            throw new BookingException("You can update only your own bookings");
+        }
 
         if (booking.getStatus() != BookingStatus.PENDING) {
             throw new BookingException(
@@ -125,11 +133,12 @@ public class BookingServiceImpl implements BookingService {
     private Booking getBookingByIdOrThrowException(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new BookingException("Booking with id " + bookingId
-                        + "does not exist"));
+                        + " does not exist"));
     }
 
     private boolean isBookingOverlapping(
-            List<Booking> existingBookings, BookingRequestDto requestDto) {
+            List<Booking> existingBookings,
+            BookingRequestDto requestDto) {
         return existingBookings.stream()
                 .anyMatch(b -> !(requestDto.checkOutDate()
                         .isBefore(b.getCheckInDate())
@@ -154,8 +163,9 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void updateBookingWithDto(Booking booking,
-                                      BookingRequestUpdateDto requestUpdateDto) {
+    private void updateBookingWithDto(
+            Booking booking,
+            BookingRequestUpdateDto requestUpdateDto) {
         if (requestUpdateDto.checkInDate() != null) {
             booking.setCheckInDate(requestUpdateDto.checkInDate());
         }
@@ -182,5 +192,10 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingException(
                     "Check-out date can't be earlier than check-in date");
         }
+    }
+
+    private boolean isManager(User user) {
+        return user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals(Role.RoleName.ROLE_MANAGER));
     }
 }

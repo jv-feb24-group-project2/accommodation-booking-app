@@ -73,11 +73,12 @@ public class BookingController {
             description = "Manager can modify any booking.")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public BookingResponseDto updateBookingByBookingId(
             @PathVariable("id") Long bookingId,
-            @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto) {
-        return bookingService.updateById(bookingId, requestUpdateDto);
+            @RequestBody @Valid BookingRequestUpdateDto requestUpdateDto,
+            @AuthenticationPrincipal User user) {
+        return bookingService.updateById(bookingId, requestUpdateDto, user);
     }
 
     @Operation(

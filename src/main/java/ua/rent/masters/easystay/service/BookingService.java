@@ -7,21 +7,27 @@ import ua.rent.masters.easystay.dto.booking.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.booking.BookingResponseDto;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
+import ua.rent.masters.easystay.model.User;
 
 public interface BookingService {
 
     BookingResponseDto create(BookingRequestDto requestDto);
 
     List<BookingResponseDto> getByUserIdOrStatus(
-            Pageable pageable, Long userId, BookingStatus bookingStatus);
+            Pageable pageable,
+            Long userId,
+            BookingStatus bookingStatus);
 
     List<BookingResponseDto> getAll(
-            Long userId, Pageable pageable);
+            Long userId,
+            Pageable pageable);
 
     BookingResponseDto getById(Long bookingId);
 
     BookingResponseDto updateById(
-            Long bookingId, BookingRequestUpdateDto requestUpdateDto);
+            Long bookingId,
+            BookingRequestUpdateDto requestUpdateDto,
+            User user);
 
     void deleteById(Long bookingId);
 
