@@ -143,8 +143,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void validateBookingDto(BookingRequestDto requestDto) {
-        List<Booking> allBookingByAccommodationId
-                = bookingRepository.findAllBookingByAccommodationId(requestDto.accommodationId());
+        List<Booking> allBookingByAccommodationId =
+                bookingRepository.findAllBookingByAccommodationId(requestDto.accommodationId());
 
         if (isBookingOverlapping(allBookingByAccommodationId, requestDto)) {
             throw new BookingException(
