@@ -16,7 +16,7 @@ import ua.rent.masters.easystay.service.NotificationService;
 @Tag(name = "Notifications", description = "Endpoints for notifications subscription")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notification")
+@RequestMapping("/notifications")
 public class NotificationController {
     private final NotificationService notificationService;
 

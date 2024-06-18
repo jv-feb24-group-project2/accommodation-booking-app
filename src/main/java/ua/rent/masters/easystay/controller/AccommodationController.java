@@ -26,7 +26,7 @@ import ua.rent.masters.easystay.service.AccommodationService;
 @Tag(name = "Accommodations", description = "Endpoints for viewing and managing accommodations.")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/accommodation")
+@RequestMapping(value = "/accommodations")
 public class AccommodationController {
     private final AccommodationService accommodationService;
 

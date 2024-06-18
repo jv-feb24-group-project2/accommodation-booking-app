@@ -26,7 +26,7 @@ import ua.rent.masters.easystay.service.AmenityService;
 @Tag(name = "Amenities", description = "Endpoints for viewing and managing amenities.")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/amenity")
+@RequestMapping(value = "/amenities")
 public class AmenityController {
     private final AmenityService amenityService;
 
