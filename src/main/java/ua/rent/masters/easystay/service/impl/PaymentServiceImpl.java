@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import ua.rent.masters.easystay.dto.payment.PaymentCancelResponseDto;
@@ -84,22 +86,23 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentResponseDto> getAllPayments(User user) {
+    public List<PaymentResponseDto> getAllPayments(User user, Pageable pageable) {
         return user.getRoles().stream()
                 .map(Role::getName)
                 .anyMatch(Role.RoleName.ROLE_MANAGER.name()::equals)
-                ? getAllUsersPayments() : getAllPaymentsByUser(user);
+                ? getAllUsersPayments(pageable) : getAllPaymentsByUser(user, pageable);
     }
 
-    private List<PaymentResponseDto> getAllUsersPayments() {
-        List<Payment> allPayments = paymentRepository.findAll();
+    private List<PaymentResponseDto> getAllUsersPayments(Pageable pageable) {
+        Page<Payment> allPayments = paymentRepository.findAll(pageable);
         return allPayments.stream()
                 .map(paymentMapper::toDto)
                 .toList();
     }
 
-    private List<PaymentResponseDto> getAllPaymentsByUser(User user) {
-        List<Payment> allByBookingUserId = paymentRepository.findAllByBookingUserId(user.getId());
+    private List<PaymentResponseDto> getAllPaymentsByUser(User user, Pageable pageable) {
+        List<Payment> allByBookingUserId = paymentRepository
+                .findAllByBookingUserId(user.getId(), pageable);
         return allByBookingUserId.stream()
                 .map(paymentMapper::toDto)
                 .toList();

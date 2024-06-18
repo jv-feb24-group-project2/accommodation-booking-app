@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,17 @@ import ua.rent.masters.easystay.dto.amenity.AmenityRequestDto;
 import ua.rent.masters.easystay.dto.amenity.AmenityResponseDto;
 import ua.rent.masters.easystay.service.AmenityService;
 
+@Tag(name = "Amenities", description = "Endpoints for viewing and managing amenities.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/amenity")
 public class AmenityController {
     private final AmenityService amenityService;
 
+    @Operation(
+            summary = "Get All Amenities",
+            description = "MANAGER can get page of amenities.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<AmenityResponseDto> getAll(
@@ -36,13 +43,20 @@ public class AmenityController {
         return amenityService.findAll(pageable);
     }
 
+    @Operation(
+            summary = "Get Amenity By Id",
+            description = "Get amenity by id. MANAGER can use this endpoint.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public AmenityResponseDto getById(@PathVariable Long id) {
         return amenityService.findById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Create Amenity",
+            description = "Create amenity. MANAGER can create new amenities.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public AmenityResponseDto create(
@@ -50,7 +64,10 @@ public class AmenityController {
         return amenityService.save(requestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Update Amenities",
+            description = "Update amenities. MANAGER can update amenities")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PutMapping("/{id}")
     public AmenityResponseDto update(@PathVariable Long id,
@@ -58,7 +75,10 @@ public class AmenityController {
         return amenityService.update(id,requestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Delete amenities",
+            description = "Delete amenities. MANAGER can delete amenities.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {

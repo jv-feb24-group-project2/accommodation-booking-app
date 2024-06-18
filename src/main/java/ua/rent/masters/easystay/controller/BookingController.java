@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +28,16 @@ import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.BookingService;
 
+@Tag(name = "Bookings", description = "Endpoints for booking processing")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
+    @Operation(
+            summary = "Create New Booking",
+            description = "Any User can book accommodation.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -40,6 +46,9 @@ public class BookingController {
         return bookingService.create(requestDto);
     }
 
+    @Operation(
+            summary = "Find All User's Bookings",
+            description = "Find all bookings that current user had made.")
     @GetMapping("/my")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -48,6 +57,9 @@ public class BookingController {
         return bookingService.getAll(user.getId(), pageable);
     }
 
+    @Operation(
+            summary = "Find Booking By Id",
+            description = "Manager can find any booking from database.")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -56,6 +68,9 @@ public class BookingController {
         return bookingService.getById(bookingId);
     }
 
+    @Operation(
+            summary = "Update Booking By Id",
+            description = "Manager can modify any booking.")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -65,6 +80,9 @@ public class BookingController {
         return bookingService.updateById(bookingId, requestUpdateDto);
     }
 
+    @Operation(
+            summary = "Delete Booking By Id",
+            description = "Manager can delete any booking.")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -73,6 +91,10 @@ public class BookingController {
         bookingService.deleteById(bookingId);
     }
 
+    @Operation(
+            summary = "Get Booking By Parameters",
+            description = "MANAGER can get page of bookings with filtration by user's ID and "
+                    + "booking status.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_MANAGER')")
