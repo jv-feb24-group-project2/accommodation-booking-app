@@ -1,6 +1,5 @@
 package ua.rent.masters.easystay.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
     private final AccommodationService accommodationService;
-    private final NotificationService telegtramNotificationService;
+    private final NotificationService notificationService;
     private final UserRepository userRepository;
 
     @Override
@@ -42,14 +41,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.PENDING);
 
         Booking savedBooking = bookingRepository.save(booking);
-        User user = userRepository.findById(booking.getUserId()).orElseThrow(
-                () -> new EntityNotFoundException("Can't get user with id: " + booking.getUserId())
-        );
 
-        telegtramNotificationService.notifyAboutBookingStatus(
-                booking,
-                user,
-                BookingStatus.PENDING);
+        notificationService.sendToUser(booking.toMessage(), booking.getUserId());
 
         return bookingMapper.toDto(savedBooking);
     }
@@ -117,6 +110,24 @@ public class BookingServiceImpl implements BookingService {
     public void deleteById(Long bookingId) {
         Booking booking = getBookingByIdOrThrowException(bookingId);
         bookingRepository.deleteById(booking.getId());
+    }
+
+    @Override
+    @Transactional
+    public List<Booking> getExpiredBookings() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        List<Booking> expiredBookings =
+                bookingRepository.findAllByCheckOutDateBetweenAndStatusNot(
+                        LocalDate.now(), tomorrow, BookingStatus.CANCELED
+                );
+        expiredBookings.forEach(booking -> changeStatusOn(booking, BookingStatus.EXPIRED));
+        return expiredBookings;
+    }
+
+    @Override
+    public void changeStatusOn(Booking booking, BookingStatus bookingStatus) {
+        booking.setStatus(bookingStatus);
+        bookingRepository.save(booking);
     }
 
     private Booking getBookingByIdOrThrowException(Long bookingId) {

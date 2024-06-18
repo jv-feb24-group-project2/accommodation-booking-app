@@ -12,10 +12,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    Optional<User> getByChatId(long chatId);
-
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
-    List<User> findByRoleName(Role.RoleName roleName);
+    Optional<User> findByChatId(long chatId);
 
     Optional<User> getByIdAndEmail(Long id, String email);
+
+    @Query("FROM User u JOIN u.roles r WHERE  r.name = :roleName AND u.chatId IS NOT NULL")
+    List<User> getAllByRoleAndChatIdIsPresent(Role.RoleName roleName);
 }

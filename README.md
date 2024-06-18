@@ -28,58 +28,59 @@ Built with Spring Boot, Spring Security, Spring Data JPA, and Springdoc OpenAPI,
 ### 🚀 Current Functionalities
 - ##### Authentication
 
-|  HTTP method  |  Endpoint | Role  | Description  |
-|---|---|-------|---|
-|POST  | /api/auth/register | ---   |  Register a new user  |
-|POST | /api/auth/login  | All   |  Authenticate a user  |
-|  GET | /api/users/me  | All   | Get user profile information  |
-|  PUT  |/api/users/me   | All   | Update user profile information  |
-| PUT  |  /api/users/3/role | ADMIN | Update user roles |
+| HTTP method              | Endpoint             | Role  | Description                      |
+|--------------------------|----------------------|-------|----------------------------------|
+| POST                     | /api/auth/register   | ---   | Register a new user              |
+| POST                     | /api/auth/login      | ---   | Authenticate a user              |
+| GET                      | /api/users/me        | USER  | Get user profile information     |
+| PUT                      | /api/users/me        | USER  | Update user profile information  |
+| PUT                      | /api/users/{id}/role | ADMIN | Update user roles                |
 
 
 - ##### Accommodations
-|HTTP method   |  Endpoint | Role          | Description  |
-|---|---|---------------|---|
-|   Get| /api/accommodations  | All           | Get accommodations from catalog  |
-| GET  | /api/accommodations/{id}  | All           | Get accommodation for id: GET /api/accommodations/{id}  |
-|  POST |  /api/accommodations | MANAGER/ADMIN | /api/accommodations  |
-|  PUT |   /api/accommodations/{id}|     ADMIN          |Update a specific accommodation   |
-| DELETE  | /api/accommodations/{id}  |  ADMIN             | Delete a specific accommodation  |
-|   |   |               |   |
+
+| HTTP method | Endpoint                 | Role    | Description                  |
+|-------------|--------------------------|---------|------------------------------|
+| GET         | /api/accommodations      | All     | Get page of accommodations   |
+| GET         | /api/accommodations/{id} | All     | Get accommodation by ID      |
+| POST        | /api/accommodations      | MANAGER | Add a new accommodation      |
+| PUT         | /api/accommodations/{id} | MANAGER | Update accommodation by ID   |
+| DELETE      | /api/accommodations/{id} | MANAGER | Delete accommodation by ID   |
+
 
 - ##### Amenity 
 
-|  HTTP method  |  Endpoint |  Role  | Description  |
-|---|---|---|---|
-| GET  |  /api/amenities | MANAGER/ADMIN  |  Get all accommodations' amenities |
-| GET  | /api/amenities/{id}  | MANAGER/ADMIN  |  Get an amenity by id |
-|  POST | /api/amenities  |  MANAGER/ADMIN | Add a new amenity  |
-|  PUT  |/api/amenities/{id}   |  MANAGER/ADMIN | Update a current category  |
-| DELETE   |  /api/amenities/{id} |   MANAGER/ADMIN|  Delete a current category |
+| HTTP method | Endpoint            | Role  | Description                       |
+|-------------|---------------------|-------|-----------------------------------|
+| GET         | /api/amenities      | ---   | Get all accommodations' amenities |
+| GET         | /api/amenities/{id} | ---   | Get an amenity by id              |
+| POST        | /api/amenities      | ADMIN | Add a new amenity                 |
+| PUT         | /api/amenities/{id} | ADMIN | Update category by ID             |
+| DELETE      | /api/amenities/{id} | ADMIN | Delete category by ID             |
 
 - ##### Payment 
-| HTTP method | Endpoint  | Role         | Description  |
-|-------------|---|--------------|---|
-| GET         |  /api/payments | USER/MANAGER |  Get payments history of certain customer |
-| GET         |   /api/payments/{id}| USER/MANAGER | Get the payment by id  |
-| GET         |  /api/payments/create-session/{bookingId} | ---          | Init payment sessions for booking transactions  |
-| GET         | /api/payments/success/  | ---          |  Redirection after successfully processing of payment |
-| GET         |/api/payments/cancel/   | ---           | Redirection after unsuccessfully processing of payment  |
+| HTTP method | Endpoint                                 | Role | Description                                            |
+|-------------|------------------------------------------|------|--------------------------------------------------------|
+| GET         | /api/payments                            | USER | Get payments history of certain customer               |
+| GET         | /api/payments/{id}                       | USER | Get the payment by ID                                  |
+| GET         | /api/payments/create-session/{bookingId} | ---  | Init payment sessions for booking transactions         |
+| GET         | /api/payments/success/                   | ---  | Redirection after successfully processing of payment   |
+| GET         | /api/payments/cancel/                    | ---  | Redirection after unsuccessfully processing of payment |
 
 - ##### Booking
-| HTTP method | Endpoint           |   Role  | Description                             |
-|-------------|--------------------|---|-----------------------------------------|
-| POST        | /api/bookings      | USER   | Creat new accommodation bookings        |
-| GET         | /api/bookings/my   | USER  | Get booking history of certain customer |
-| GET         | /api/bookings/{id} |  USER | Get a current booking                   |
-| GET         |  /api/bookings                    | MANAGER   |       Retrieves bookings based on user ID and their status                                   |
-| PUT         |/api/bookinUSERgs/{id}            | USER/MANAGER  | Update a current booking                |
-| DELETE      |/api/bookinUSERgs/{id}            | USER  | Delete a current booking                |
+| HTTP method | Endpoint           | Role    | Description                                                           |
+|-------------|--------------------|---------|-----------------------------------------------------------------------|
+| POST        | /api/bookings      | USER    | Creat new accommodation bookings                                      |
+| GET         | /api/bookings/my   | USER    | Get booking history of current customer                               |
+| GET         | /api/bookings/{id} | MANAGER | Get booking by ID                                                     |
+| GET         | /api/bookings      | MANAGER | Get page of bookings with filtration by user ID and/or booking status |
+| PUT         | /api/bookings/{id} | MANAGER | Update booking by ID                                               |
+| DELETE      | /api/bookings/{id} | MANAGER | Delete booking by ID                                               |
 
   
 - #####  Swagger Documentation
     - the API documentation at http://localhost:8080/swagger-ui.html.
-    - You can explore all available endpoints, their descriptions, request parameters, and response schemas.
+    - You can explore all available endpoints, their descriptions, request parameters, and response schemas.  
       **[Use Postman collection](https://rent-masters.postman.co/workspace/Accommodation-Booking-APP~2719fff1-5c95-44a8-8913-0a604ac879f4/overview)**
       
 
@@ -147,3 +148,10 @@ Solution: Integrated Telegram Notifications Service to provide users instant not
 
 Challenge 4: Stripe
 Solution: Understanding the intricacies of payment session creation proved crucial to ensuring a seamless payment process.
+
+### 👥 Contributors:
+- Artem Akymenko **[LinkedIn](https://www.linkedin.com/in/artem-akymenko-4b143030a/)** , **[GitHub](https://github.com/k0sm0naft)** 
+- Taras Fedak **[LinkedIn](https://www.linkedin.com/in/taras-fedak-a4535b147/)** , **[GitHub](https://github.com/fedaktaras)** 
+- Serhii Gainovskyi **[LinkedIn](https://www.linkedin.com/in/serj-gainovskyi-58b631215/)** , **[GitHub](https://github.com/JohnGrey17)** 
+- Pavlo Serikov **[LinkedIn](https://www.linkedin.com/in/pavlo-serikov/)** , **[GitHub](https://github.com/rel1c-hub)** 
+- Hanna Ratushniak **[LinkedIn](https://www.linkedin.com/in/hanna-ratushnyak/)** , **[GitHub](https://github.com/AnyaRatusnyak)** 

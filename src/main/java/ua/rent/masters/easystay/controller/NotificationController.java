@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,21 +13,28 @@ import ua.rent.masters.easystay.dto.NotificationResponse;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.service.NotificationService;
 
+@Tag(name = "Notifications", description = "Endpoints for notifications subscription")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/notification")
 public class NotificationController {
     private final NotificationService notificationService;
 
+    @Operation(
+            summary = "Subscribe",
+            description = "USER can subscribe for notifications")
     @GetMapping("/subscribe")
     @ResponseStatus(HttpStatus.OK)
-    public NotificationResponse subscribe(@AuthenticationPrincipal User user) {
-        return notificationService.subscribe(user);
+    public NotificationResponse getSubscribeLink(@AuthenticationPrincipal User user) {
+        return notificationService.generateSubscribeLink(user.getId());
     }
 
+    @Operation(
+            summary = "Unsubscribe",
+            description = "USER can unsubscribe from notifications")
     @GetMapping("/unsubscribe")
     @ResponseStatus(HttpStatus.OK)
     public NotificationResponse unsubscribe(@AuthenticationPrincipal User user) {
-        return notificationService.unsubscribe(user);
+        return notificationService.unsubscribe(user.getChatId());
     }
 }

@@ -1,6 +1,8 @@
 package ua.rent.masters.easystay.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,14 +27,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public UserResponseDto updateUserRoles(
-            Long userId,
-            UserUpdateRolesDto userUpdateRolesDto
-    ) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Can't find user with id: " + userId));
+    public UserResponseDto updateUserRoles(Long userId, UserUpdateRolesDto userUpdateRolesDto) {
+        User user = getById(userId);
         Set<Role> newRoles = new HashSet<>();
         for (String roleName : userUpdateRolesDto.roles()) {
             Role role = roleRepository.findByName(Role.RoleName.valueOf(roleName))
@@ -51,7 +47,31 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userUpdateProfileDto.firstName());
         user.setLastName(userUpdateProfileDto.lastName());
         user.setPassword(passwordEncoder.encode(userUpdateProfileDto.password()));
-        User savedUser = userRepository.save(user);
-        return userMapper.toDtoWithRoles(savedUser);
+        return userMapper.toDtoWithRoles(save(user));
+    }
+
+    @Override
+    public List<User> getSubscribedManagers() {
+        return userRepository.getAllByRoleAndChatIdIsPresent(Role.RoleName.ROLE_MANAGER);
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findByChatId(Long chatId) {
+        return userRepository.findByChatId(chatId);
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    private User getById(Long id) {
+        return findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't find user with id: " + id));
     }
 }
