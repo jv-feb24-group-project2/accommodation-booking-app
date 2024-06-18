@@ -14,7 +14,6 @@ import static ua.rent.masters.easystay.utils.TestDataUtils.getAccommodationDto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,20 +65,15 @@ class AccommodationServiceImplTest {
         AccommodationRequestDto requestDto = createAccommodationRequestDto();
         Accommodation accommodation = createAccomadation();
         AccommodationResponseDto accommodationResponseDto = getAccommodationDto(accommodation);
-        Set<Long> amenityIds = AMENITY_IDS;
 
         // Mocking behavior
-        doNothing().when(amenityService).validateAmenitiesExist(amenityIds);
+        doNothing().when(amenityService).validateAmenitiesExist(AMENITY_IDS);
         when(accommodationMapper.toModel(any(AccommodationRequestDto.class)))
                 .thenReturn(accommodation);
         when(accommodationRepository.save(any(Accommodation.class)))
                 .thenReturn(accommodation);
         when(accommodationMapper.toDto(any(Accommodation.class)))
                 .thenReturn(accommodationResponseDto);
-        doNothing().when(notificationService)
-                .notifyAboutAccommodationStatus(accommodation, CREATED);
-                .notifyAboutAccommodationStatus(savedAccommodation, CREATED);
-                .thenReturn(accommodation);
         doNothing().when(notificationService).sendToAllManagers(any(String.class));
 
         // When
@@ -132,7 +126,7 @@ class AccommodationServiceImplTest {
         when(accommodationRepository.findAll(pageable))
                 .thenReturn(new org.springframework.data.domain.PageImpl<>(accommodations));
         when(accommodationMapper.toDto(any(Accommodation.class)))
-                .thenReturn(getAccommodationDto(accommodations.get(0)));
+                .thenReturn(getAccommodationDto(accommodations.getFirst()));
 
         // When
         List<AccommodationResponseDto> result = accommodationService.findAll(pageable);
