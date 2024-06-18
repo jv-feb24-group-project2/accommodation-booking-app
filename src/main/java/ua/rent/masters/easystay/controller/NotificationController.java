@@ -19,13 +19,13 @@ public class NotificationController {
 
     @GetMapping("/subscribe")
     @ResponseStatus(HttpStatus.OK)
-    public NotificationResponse subscribe(@AuthenticationPrincipal User user) {
-        return notificationService.subscribe(user);
+    public NotificationResponse getSubscribeLink(@AuthenticationPrincipal User user) {
+        return notificationService.generateSubscribeLink(user.getId());
     }
 
     @GetMapping("/unsubscribe")
     @ResponseStatus(HttpStatus.OK)
     public NotificationResponse unsubscribe(@AuthenticationPrincipal User user) {
-        return notificationService.unsubscribe(user);
+        return notificationService.unsubscribe(user.getChatId());
     }
 }

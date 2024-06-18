@@ -1,5 +1,7 @@
 package ua.rent.masters.easystay.model;
 
+import static java.lang.System.lineSeparator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -48,6 +50,17 @@ public class Accommodation {
     private Integer availability;
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public String toMessage(String baseUrl, AccommodationStatus status) {
+        return status.name() + ':' + lineSeparator()
+                + "Accommodation ID: " + id + lineSeparator()
+                + "Type: " + type + lineSeparator()
+                + "Location: " + location + lineSeparator()
+                + "Daily rate: " + dailyRate + lineSeparator()
+                + "Availability: " + availability + lineSeparator()
+                + (status == AccommodationStatus.DELETED ? ""
+                           : "Link: " + baseUrl + "/api/accommodations/" + id);
+    }
 
     public enum Type {
         HOUSE,

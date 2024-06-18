@@ -27,14 +27,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public UserResponseDto updateUserRoles(
-            Long userId,
-            UserUpdateRolesDto userUpdateRolesDto
-    ) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Can't find user with id: " + userId));
+    public UserResponseDto updateUserRoles(Long userId, UserUpdateRolesDto userUpdateRolesDto) {
+        User user = getById(userId);
         Set<Role> newRoles = new HashSet<>();
         for (String roleName : userUpdateRolesDto.roles()) {
             Role role = roleRepository.findByName(Role.RoleName.valueOf(roleName))
@@ -72,9 +66,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByIdAndEmail(Long id, String email) {
-        return userRepository.getByIdAndEmail(id, email).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "User with email %s and ID%d not exist.".formatted(email, id)));
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    private User getById(Long id) {
+        return findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't find user with id: " + id));
     }
 }

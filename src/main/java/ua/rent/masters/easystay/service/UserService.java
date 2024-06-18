@@ -25,5 +25,5 @@ public interface UserService {
 
     Optional<User> findByChatId(Long chatId);
 
-    User getByIdAndEmail(Long id, String email);
+    Optional<User> findById(Long id);
 }

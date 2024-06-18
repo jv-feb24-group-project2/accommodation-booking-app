@@ -24,7 +24,6 @@ import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.PaymentRepository;
-import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.NotificationService;
 import ua.rent.masters.easystay.service.PaymentService;
 
@@ -44,8 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final AccommodationRepository accommodationRepository;
     private final StripePaymentService stripePaymentService;
     private final PaymentMapper paymentMapper;
-    private final NotificationService telegramNotificationService;
-    private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
@@ -59,9 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRepository.save(payment);
 
-        User user = getUser(payment.getBooking());
-        telegramNotificationService.notifyAboutPaymentStatus(payment,
-                user, PaymentStatus.PENDING);
+        notificationService.sendToUser(payment.toMessage(), booking.getUserId());
 
         return payment.getSessionUrl();
     }
@@ -74,11 +70,8 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
-        User user = getUser(booking);
-        telegramNotificationService.notifyAboutPaymentStatus(payment,
-                user, PaymentStatus.PAID);
-        telegramNotificationService.notifyAboutBookingStatus(booking,
-                user, BookingStatus.CONFIRMED);
+        notificationService.sendToUser(payment.toMessage(), booking.getUserId());
+        notificationService.sendToUser(booking.toMessage(), booking.getUserId());
     }
 
     @Override
@@ -130,11 +123,6 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findWithBookingBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Cant find payment with session id: "
                         + sessionId));
-    }
-
-    private User getUser(Booking booking) {
-        return userRepository.findById(booking.getUserId()).orElseThrow(
-            () -> new EntityNotFoundException("Can't find user with id: " + booking.getUserId()));
     }
 
     private BigDecimal calculateAmount(Booking booking, Accommodation accommodation) {
