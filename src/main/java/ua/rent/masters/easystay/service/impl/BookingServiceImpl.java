@@ -17,7 +17,6 @@ import ua.rent.masters.easystay.model.BookingStatus;
 import ua.rent.masters.easystay.model.Role;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.BookingRepository;
-import ua.rent.masters.easystay.repository.UserRepository;
 import ua.rent.masters.easystay.service.AccommodationService;
 import ua.rent.masters.easystay.service.BookingService;
 import ua.rent.masters.easystay.service.NotificationService;
@@ -29,7 +28,6 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final AccommodationService accommodationService;
     private final NotificationService notificationService;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -140,15 +138,13 @@ public class BookingServiceImpl implements BookingService {
             List<Booking> existingBookings,
             BookingRequestDto requestDto) {
         return existingBookings.stream()
-                .anyMatch(b -> !(requestDto.checkOutDate()
-                        .isBefore(b.getCheckInDate())
-                        || requestDto.checkInDate()
-                        .isAfter(b.getCheckOutDate())));
+                .anyMatch(b -> requestDto.checkInDate().isBefore(b.getCheckOutDate())
+                        && requestDto.checkOutDate().isAfter(b.getCheckInDate()));
     }
 
     private void validateBookingDto(BookingRequestDto requestDto) {
-        List<Booking> allBookingByAccommodationId = bookingRepository
-                .findAllBookingByAccommodationId(requestDto.accommodationId());
+        List<Booking> allBookingByAccommodationId =
+                bookingRepository.findAllBookingByAccommodationId(requestDto.accommodationId());
 
         if (isBookingOverlapping(allBookingByAccommodationId, requestDto)) {
             throw new BookingException(
@@ -158,8 +154,13 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingException(
                     "You can't specify a check-in date that is before today's date.");
         }
+        if (requestDto.checkInDate().isEqual(requestDto.checkOutDate())) {
+            throw new BookingException(
+                    "Check-in date can't be the same as check-out date.");
+        }
         if (requestDto.checkOutDate().isBefore(requestDto.checkInDate())) {
-            throw new BookingException("Checkout date can`t be earlier that checkin date");
+            throw new BookingException(
+                    "Check-out date can't be earlier than check-in date.");
         }
     }
 
