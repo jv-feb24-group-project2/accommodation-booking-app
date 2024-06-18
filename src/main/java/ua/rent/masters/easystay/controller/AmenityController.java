@@ -55,7 +55,7 @@ public class AmenityController {
 
     @Operation(
             summary = "Create Amenity",
-            description = "Create amenity. MANAGER can new amenities.")
+            description = "Create amenity. MANAGER can create new amenities.")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
