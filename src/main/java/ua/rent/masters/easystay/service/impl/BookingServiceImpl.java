@@ -73,8 +73,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto getById(Long bookingId) {
-        Booking booking = getBookingByIdOrThrowException(bookingId);
+    public BookingResponseDto getById(Long bookingId, User user) {
+        Booking booking;
+        boolean isManager = isManager(user);
+        if (isManager) {
+            booking = getBookingByIdOrThrowException(bookingId);
+        } else {
+            return bookingMapper.toDto(bookingRepository.findAllByUserId(user.getId(),
+                            Pageable.unpaged())
+                    .stream()
+                    .filter(b -> b.getId().equals(bookingId))
+                    .findFirst().orElseThrow(
+                            () -> new BookingException(
+                                    "booking with id: " + bookingId + " does not exist")));
+        }
         return bookingMapper.toDto(booking);
     }
 

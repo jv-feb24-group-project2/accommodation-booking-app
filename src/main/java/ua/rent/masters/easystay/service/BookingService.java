@@ -22,7 +22,7 @@ public interface BookingService {
             Long userId,
             Pageable pageable);
 
-    BookingResponseDto getById(Long bookingId);
+    BookingResponseDto getById(Long bookingId, User user);
 
     BookingResponseDto updateById(
             Long bookingId,

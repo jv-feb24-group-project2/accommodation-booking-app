@@ -62,10 +62,10 @@ public class BookingController {
             description = "Manager can find any booking from database.")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public BookingResponseDto findSpecificBookingById(
-            @PathVariable("id") Long bookingId) {
-        return bookingService.getById(bookingId);
+            @PathVariable("id") Long bookingId, @AuthenticationPrincipal User user) {
+        return bookingService.getById(bookingId, user);
     }
 
     @Operation(
