@@ -34,4 +34,6 @@ public interface BookingService {
     List<Booking> getExpiredBookings();
 
     void changeStatusOn(Booking booking, BookingStatus bookingStatus);
+
+    Booking findById(Long bookingId);
 }

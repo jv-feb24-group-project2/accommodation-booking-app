@@ -11,6 +11,7 @@ import ua.rent.masters.easystay.dto.booking.BookingRequestDto;
 import ua.rent.masters.easystay.dto.booking.BookingRequestUpdateDto;
 import ua.rent.masters.easystay.dto.booking.BookingResponseDto;
 import ua.rent.masters.easystay.exception.BookingException;
+import ua.rent.masters.easystay.exception.EntityNotFoundException;
 import ua.rent.masters.easystay.mapper.BookingMapper;
 import ua.rent.masters.easystay.model.Booking;
 import ua.rent.masters.easystay.model.BookingStatus;
@@ -99,7 +100,8 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingByIdOrThrowException(bookingId);
 
         if (!isManager(user) && !booking.getUserId().equals(user.getId())) {
-            throw new BookingException("You can update only your own bookings");
+            throw new BookingException(
+                    "booking with id: " + bookingId + " does not exist");
         }
 
         if (booking.getStatus() != BookingStatus.PENDING) {
@@ -138,6 +140,13 @@ public class BookingServiceImpl implements BookingService {
     public void changeStatusOn(Booking booking, BookingStatus bookingStatus) {
         booking.setStatus(bookingStatus);
         bookingRepository.save(booking);
+    }
+
+    @Override
+    public Booking findById(Long bookingId) {
+        return bookingRepository.findById(bookingId).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "Cant find booking with id: " + bookingId));
     }
 
     private Booking getBookingByIdOrThrowException(Long bookingId) {
