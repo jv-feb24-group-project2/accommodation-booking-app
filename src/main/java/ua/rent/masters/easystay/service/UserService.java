@@ -26,4 +26,6 @@ public interface UserService {
     Optional<User> findByChatId(Long chatId);
 
     Optional<User> findById(Long id);
+
+    UserResponseDto getUserProfile(Long id);
 }
