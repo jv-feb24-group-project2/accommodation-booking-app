@@ -37,6 +37,15 @@ public class UserController {
     }
 
     @Operation(
+            summary = "Get User Profile By Admin",
+            description = "Any user can update his credentials.")
+    @PutMapping("/{id}]")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UserResponseDto getUserById(@PathVariable Long id) {
+        return userService.getUserProfile(id);
+    }
+
+    @Operation(
             summary = "Update Roles",
             description = "Only ADMIN can update roles of other users.")
     @PutMapping("/{id}/role")

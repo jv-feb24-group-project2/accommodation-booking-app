@@ -70,6 +70,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
+    @Override
+    public UserResponseDto getUserProfile(Long id) {
+        return userMapper.toDtoWithRoles(getById(id));
+    }
+
     private User getById(Long id) {
         return findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find user with id: " + id));
