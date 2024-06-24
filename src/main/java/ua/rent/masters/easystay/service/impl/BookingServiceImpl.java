@@ -75,20 +75,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getById(Long bookingId, User user) {
-        Booking booking;
-        boolean isManager = isManager(user);
-        if (isManager) {
-            booking = getBookingByIdOrThrowException(bookingId);
-        } else {
-            return bookingMapper.toDto(bookingRepository.findAllByUserId(user.getId(),
-                            Pageable.unpaged())
-                    .stream()
-                    .filter(b -> b.getId().equals(bookingId))
-                    .findFirst().orElseThrow(
-                            () -> new BookingException(
-                                    "booking with id: " + bookingId + " does not exist")));
-        }
+        Booking booking = getById(bookingId);
+        validateAccess(booking.getUserId(), user);
         return bookingMapper.toDto(booking);
+    }
+
+    @Override
+    public Booking getById(Long bookingId) {
+        return bookingRepository.findById(bookingId).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "Cant find booking with id: " + bookingId));
     }
 
     @Override
@@ -97,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
             Long bookingId,
             BookingRequestUpdateDto requestUpdateDto,
             User user) {
-        Booking booking = getBookingByIdOrThrowException(bookingId);
+        Booking booking = getById(bookingId);
 
         if (!isManager(user) && !booking.getUserId().equals(user.getId())) {
             throw new BookingException(
@@ -120,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void deleteById(Long bookingId) {
-        Booking booking = getBookingByIdOrThrowException(bookingId);
+        Booking booking = getById(bookingId);
         bookingRepository.deleteById(booking.getId());
     }
 
@@ -140,19 +136,6 @@ public class BookingServiceImpl implements BookingService {
     public void changeStatusOn(Booking booking, BookingStatus bookingStatus) {
         booking.setStatus(bookingStatus);
         bookingRepository.save(booking);
-    }
-
-    @Override
-    public Booking findById(Long bookingId) {
-        return bookingRepository.findById(bookingId).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "Cant find booking with id: " + bookingId));
-    }
-
-    private Booking getBookingByIdOrThrowException(Long bookingId) {
-        return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingException("Booking with id " + bookingId
-                        + " does not exist"));
     }
 
     private boolean isBookingOverlapping(
@@ -219,5 +202,11 @@ public class BookingServiceImpl implements BookingService {
     private boolean isManager(User user) {
         return user.getRoles().stream()
                 .anyMatch(role -> role.getName().equals(Role.RoleName.ROLE_MANAGER));
+    }
+
+    private void validateAccess(Long bookingId, User user) {
+        if (!isManager(user) && !bookingId.equals(user.getId())) {
+            throw new BookingException("Booking with id: " + bookingId + " does not exist");
+        }
     }
 }

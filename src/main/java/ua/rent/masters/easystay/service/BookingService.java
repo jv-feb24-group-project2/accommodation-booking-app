@@ -24,6 +24,8 @@ public interface BookingService {
 
     BookingResponseDto getById(Long bookingId, User user);
 
+    Booking getById(Long bookingId);
+
     BookingResponseDto updateById(
             Long bookingId,
             BookingRequestUpdateDto requestUpdateDto,
@@ -35,5 +37,4 @@ public interface BookingService {
 
     void changeStatusOn(Booking booking, BookingStatus bookingStatus);
 
-    Booking findById(Long bookingId);
 }

@@ -51,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
-        Booking booking = bookingService.findById(bookingId);
+        Booking booking = bookingService.getById(bookingId);
 
         if (booking.getStatus().equals(BookingStatus.CONFIRMED)) {
             throw new IllegalStateException("Booking is already paid");
