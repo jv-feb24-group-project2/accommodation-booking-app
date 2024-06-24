@@ -55,7 +55,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return getResponseEntity(HttpStatus.valueOf(status.value()), ex.getLocalizedMessage());
     }
 
-    @ExceptionHandler({BookingException.class, IllegalStateException.class})
+    @ExceptionHandler({
+            BookingException.class,
+            IllegalStateException.class,
+            RegistrationException.class
+    })
     protected ResponseEntity<Object> handleNotFound(Exception ex) {
         return getResponseEntity(BAD_REQUEST, ex.getMessage());
     }

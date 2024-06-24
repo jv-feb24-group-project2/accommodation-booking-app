@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.rent.masters.easystay.dto.user.UserResponseDto;
 import ua.rent.masters.easystay.dto.user.registration.UserRegistrationRequestDto;
+import ua.rent.masters.easystay.exception.RegistrationException;
 import ua.rent.masters.easystay.mapper.UserMapper;
 import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.UserRepository;
@@ -23,9 +24,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto) {
-        if (userRepository.existsByEmail(requestDto.email())) {
-            throw new RuntimeException("User with email "
-                    + requestDto.email() + " already exists");
+        String email = requestDto.email();
+        if (userRepository.existsByEmail(email)) {
+            throw new RegistrationException("User with email %s already exists".formatted(email));
         }
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
