@@ -22,7 +22,9 @@ public interface BookingService {
             Long userId,
             Pageable pageable);
 
-    BookingResponseDto getById(Long bookingId);
+    BookingResponseDto getById(Long bookingId, User user);
+
+    Booking getById(Long bookingId);
 
     BookingResponseDto updateById(
             Long bookingId,
@@ -34,4 +36,5 @@ public interface BookingService {
     List<Booking> getExpiredBookings();
 
     void changeStatusOn(Booking booking, BookingStatus bookingStatus);
+
 }

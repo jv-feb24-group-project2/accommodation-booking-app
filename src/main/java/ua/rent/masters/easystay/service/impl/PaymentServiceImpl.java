@@ -26,6 +26,7 @@ import ua.rent.masters.easystay.model.User;
 import ua.rent.masters.easystay.repository.AccommodationRepository;
 import ua.rent.masters.easystay.repository.BookingRepository;
 import ua.rent.masters.easystay.repository.PaymentRepository;
+import ua.rent.masters.easystay.service.BookingService;
 import ua.rent.masters.easystay.service.NotificationService;
 import ua.rent.masters.easystay.service.PaymentService;
 
@@ -46,12 +47,12 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripePaymentService stripePaymentService;
     private final PaymentMapper paymentMapper;
     private final NotificationService notificationService;
+    private final BookingService bookingService;
 
     @Override
     public String createPaymentSession(Long bookingId) throws StripeException {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new EntityNotFoundException("Cant find booking with id: "
-                        + bookingId));
+        Booking booking = bookingService.getById(bookingId);
+
         if (booking.getStatus().equals(BookingStatus.CONFIRMED)) {
             throw new IllegalStateException("Booking is already paid");
         }
